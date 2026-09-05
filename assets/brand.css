@@ -1,0 +1,727 @@
+/* ==========================================================================
+   Churry's · sistema visual compartido
+   Lo usan churrys.html (home) y producto.html (personalización).
+   ========================================================================== */
+
+:root{
+  --rojo:#C20C0B;
+  --rojo-vivo:#D82828;
+  --bordo:#6E0000;
+  --bordo-hondo:#4A0202;
+  --crema:#FAF5F1;
+  --crema-humo:#F0E8E8;
+  --oro:#F2B22E;
+  --tinta:#2A1210;
+
+  --display:'Alfa Slab One', Rockwell, Georgia, serif;
+  --script:'Lobster Two', 'Brush Script MT', cursive;
+  --sans:'Poppins', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --pad:clamp(18px,5vw,64px);
+  --ease:cubic-bezier(.22,.8,.25,1);
+}
+
+/* ---------- tarjetas del catálogo ---------------------------------------- */
+.card{
+  background:#fff;
+  border:3px solid var(--rojo);
+  border-radius:10px;
+  box-shadow:6px 6px 0 rgba(194,12,11,.15);
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  transition:transform .22s var(--ease), box-shadow .22s var(--ease);
+}
+.card:hover{
+  transform:translateY(-6px);
+  box-shadow:10px 12px 0 rgba(194,12,11,.22);
+}
+
+.card .shot{
+  background:var(--rojo);
+  aspect-ratio:1/1;            /* igual que el lienzo de assets/carta/ */
+  overflow:hidden;
+  position:relative;
+}
+.card .shot img{
+  width:100%;height:100%;
+  object-fit:contain;          /* entera, sin recorte */
+  transition:transform .4s var(--ease);
+}
+.card:hover .shot img{transform:scale(1.06)}
+
+.card .body{
+  padding:16px 16px 18px;
+  display:flex;flex-direction:column;gap:8px;flex:1;
+}
+.card h3{
+  font-family:var(--display);font-weight:400;margin:0;
+  font-size:1.3rem;line-height:1;color:var(--rojo);text-transform:uppercase;
+}
+.card .sub{
+  font-family:var(--script);font-style:italic;font-weight:700;
+  color:#8A4A45;font-size:1rem;margin:-2px 0 0;line-height:1.2;
+}
+.card .ing{margin:0;font-size:.79rem;line-height:1.55;color:#6B4640;flex:1}
+
+/* ---------- bloque de compra simple / doble ------------------------------ */
+.compra{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;
+  margin-top:auto;padding-top:12px;
+  border-top:2px dashed rgba(194,12,11,.28);
+}
+.opcion{display:flex;flex-direction:column;gap:6px}
+.opcion .precio{
+  font-family:var(--display);font-size:1.12rem;line-height:1;
+  color:var(--tinta);text-align:center;
+}
+.opcion .precio small{
+  display:block;font-family:var(--sans);font-weight:800;
+  font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;
+  color:#B4756F;margin-bottom:3px;
+}
+
+/* botón de compra: la animación principal del catálogo */
+.btn-size{
+  display:block;text-align:center;text-decoration:none;cursor:pointer;
+  background:var(--crema);color:var(--rojo);
+  border:2px solid var(--rojo);border-radius:5px;
+  padding:10px 8px;
+  font-family:var(--display);font-size:.82rem;letter-spacing:.06em;
+  text-transform:uppercase;
+  box-shadow:0 3px 0 rgba(110,0,0,.35);
+  transition:transform .16s var(--ease), box-shadow .16s var(--ease),
+             background .2s, color .2s, border-color .2s;
+}
+.btn-size:hover{
+  background:var(--rojo-vivo);color:var(--crema);border-color:var(--bordo);
+  transform:translateY(-3px) scale(1.05);
+  box-shadow:0 8px 16px rgba(110,0,0,.34);
+}
+.btn-size:active{transform:translateY(1px) scale(.99);box-shadow:0 2px 0 rgba(110,0,0,.35)}
+.btn-size.doble{background:var(--rojo);color:var(--crema);border-color:var(--bordo)}
+.btn-size.doble:hover{background:var(--bordo)}
+
+/* ==========================================================================
+   Página de producto
+   ========================================================================== */
+.prod{max-width:1100px;margin:0 auto;padding:clamp(24px,5vw,52px) var(--pad)}
+
+.volver{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:.72rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--rojo);text-decoration:none;margin-bottom:clamp(16px,3vw,26px);
+  border-bottom:2px solid transparent;transition:border-color .18s,gap .18s;
+}
+.volver:hover{border-color:var(--rojo);gap:12px}
+
+.prod-grid{display:grid;gap:clamp(22px,4vw,44px);grid-template-columns:1fr;align-items:start}
+@media(min-width:860px){.prod-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+
+.prod-foto{
+  background:var(--rojo);border:3px solid var(--bordo);border-radius:10px;
+  overflow:hidden;aspect-ratio:1/1;box-shadow:8px 8px 0 rgba(194,12,11,.16);
+}
+@media(min-width:860px){.prod-foto{position:sticky;top:104px}}
+.prod-foto img{width:100%;height:100%;object-fit:cover}
+
+.prod-info h1{
+  font-family:var(--display);font-weight:400;margin:6px 0 0;
+  font-size:clamp(2rem,7vw,3rem);line-height:.96;
+  color:var(--rojo);text-transform:uppercase;
+  text-shadow:4px 4px 0 rgba(110,0,0,.14);
+}
+.prod-info .tagline{
+  font-family:var(--script);font-style:italic;font-weight:700;
+  color:#8A4A45;font-size:1.15rem;margin:8px 0 0;
+}
+.prod-info .desc{margin:14px 0 0;font-size:.92rem;line-height:1.65;color:#5B3A36;max-width:46ch}
+
+.k{font-size:.68rem;font-weight:800;letter-spacing:.24em;text-transform:uppercase;color:#B4756F;margin:0}
+
+/* selector de tamaño */
+.bloque{margin:clamp(22px,4vw,32px) 0 0;border-top:2px dashed rgba(194,12,11,.3);padding-top:18px}
+.bloque > .k{margin-bottom:12px}
+
+.sizes{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.size-op{
+  background:#fff;border:3px solid var(--rojo);border-radius:8px;
+  padding:14px 12px;cursor:pointer;text-align:left;
+  display:flex;flex-direction:column;gap:4px;
+  transition:transform .16s var(--ease), box-shadow .16s var(--ease),
+             background .2s, color .2s;
+  box-shadow:0 3px 0 rgba(110,0,0,.25);
+}
+.size-op:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 9px 18px rgba(110,0,0,.28)}
+.size-op .nm{
+  font-family:var(--display);font-size:.9rem;text-transform:uppercase;
+  color:var(--rojo);line-height:1;
+}
+.size-op .pr{font-family:var(--display);font-size:1.3rem;color:var(--tinta);line-height:1}
+.size-op[aria-pressed="true"]{background:var(--rojo);border-color:var(--bordo);box-shadow:0 3px 0 var(--bordo)}
+.size-op[aria-pressed="true"] .nm,
+.size-op[aria-pressed="true"] .pr{color:var(--crema)}
+
+/* toppings */
+.toppings{display:flex;flex-direction:column;gap:10px}
+.topping{
+  display:flex;align-items:center;gap:14px;
+  background:#fff;border:3px solid rgba(194,12,11,.35);border-radius:8px;
+  padding:12px 14px;
+  transition:border-color .2s, background .2s, transform .16s var(--ease), box-shadow .16s var(--ease);
+}
+.topping:hover{transform:translateY(-2px);box-shadow:0 8px 16px rgba(110,0,0,.14)}
+.topping.on{border-color:var(--rojo);background:#FFF6F2;box-shadow:0 6px 14px rgba(194,12,11,.18)}
+.topping .txt{flex:1;min-width:0}
+.topping .nm{
+  font-family:var(--display);font-size:.92rem;text-transform:uppercase;
+  color:var(--rojo);line-height:1.1;display:block;
+}
+.topping .note{font-size:.74rem;color:#6B4640;line-height:1.45;margin:3px 0 0;display:block}
+.topping .pr{font-family:var(--display);font-size:.95rem;color:var(--tinta);flex:none}
+
+.stepper{display:flex;align-items:center;gap:0;flex:none;border:2px solid var(--rojo);border-radius:999px;overflow:hidden}
+.stepper button{
+  width:34px;height:34px;border:0;background:var(--crema);color:var(--rojo);
+  font-family:var(--display);font-size:1.05rem;line-height:1;cursor:pointer;
+  transition:background .18s, color .18s, transform .12s var(--ease);
+}
+.stepper button:hover:not(:disabled){background:var(--rojo-vivo);color:var(--crema);transform:scale(1.12)}
+.stepper button:disabled{opacity:.35;cursor:not-allowed}
+.stepper .qty{
+  min-width:34px;text-align:center;font-family:var(--display);
+  font-size:.95rem;color:var(--tinta);background:#fff;
+}
+
+/* nota del pedido */
+.nota{
+  width:100%;min-height:82px;resize:vertical;
+  border:3px solid rgba(194,12,11,.35);border-radius:8px;
+  padding:12px 14px;font:inherit;font-size:.88rem;color:var(--tinta);
+  background:#fff;transition:border-color .2s;
+}
+.nota:focus{border-color:var(--rojo);outline:none}
+
+/* total + pedido */
+.total{
+  margin:clamp(22px,4vw,30px) 0 0;
+  background:var(--rojo);color:var(--crema);border-radius:10px;
+  padding:clamp(18px,3.5vw,26px);
+  box-shadow:8px 8px 0 rgba(194,12,11,.18);
+}
+.total .fila{
+  display:flex;justify-content:space-between;align-items:baseline;gap:14px;
+  font-size:.84rem;padding:5px 0;color:#F8D6D2;
+}
+.total .fila.grande{
+  border-top:2px dashed rgba(255,255,255,.35);margin-top:10px;padding-top:14px;
+  font-family:var(--display);font-size:1.55rem;color:var(--crema);
+}
+.total .cta{margin-top:16px;width:100%;justify-content:center}
+.total .aviso{margin:10px 0 0;font-size:.72rem;line-height:1.5;color:#F3B3AD}
+
+/* aviso flotante */
+.toast{
+  position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);
+  background:var(--bordo-hondo);color:var(--crema);
+  padding:13px 20px;border-radius:999px;border:2px solid var(--oro);
+  font-size:.82rem;font-weight:700;box-shadow:0 12px 28px rgba(0,0,0,.34);
+  opacity:0;pointer-events:none;transition:opacity .25s, transform .25s var(--ease);
+  z-index:200;max-width:min(92vw,420px);text-align:center;
+}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+@media (prefers-reduced-motion: reduce){
+  .card,.card .shot img,.btn-size,.size-op,.topping,.stepper button,.toast{
+    transition-duration:.01ms !important;
+  }
+  .card:hover,.btn-size:hover,.size-op:hover,.topping:hover{transform:none}
+}
+
+/* ==========================================================================
+   Chrome compartido (base, header, botones, footer)
+   churrys.html vuelve a declarar estas reglas en su <style> propio;
+   como el inline va después, gana él. Acá viven para producto.html.
+   ========================================================================== */
+*{box-sizing:border-box}
+/* El atributo hidden lo pisa cualquier regla con display (flex, grid…).
+   Esta línea hace que hidden esconda de verdad, siempre. */
+[hidden]{display:none !important}
+html{-webkit-text-size-adjust:100%;scroll-padding-top:88px}
+body{
+  margin:0;background:var(--crema);color:var(--tinta);
+  font-family:var(--sans);font-weight:500;overflow-x:hidden;
+}
+img{display:block;max-width:100%;-webkit-user-drag:none;user-select:none}
+a{color:inherit}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--oro);outline-offset:3px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.rail{
+  --sq:clamp(10px,2.6vw,16px);
+  --c:var(--crema);
+  height:calc(var(--sq)*2);width:100%;
+  background-image:
+    repeating-linear-gradient(90deg,var(--c) 0 var(--sq),transparent var(--sq) calc(var(--sq)*2)),
+    repeating-linear-gradient(90deg,transparent 0 var(--sq),var(--c) var(--sq) calc(var(--sq)*2));
+  background-size:100% 50%,100% 50%;
+  background-position:0 0,0 100%;
+  background-repeat:no-repeat;
+}
+.rail.rojo{--c:var(--rojo-vivo)}
+
+.top{background:var(--rojo)}
+header{background:var(--crema);position:sticky;top:0;z-index:60;border-bottom:3px solid var(--rojo)}
+.nav{max-width:1240px;margin:0 auto;padding:10px var(--pad);display:flex;align-items:center;gap:14px}
+.nav .logo{height:clamp(38px,7.2vw,54px);width:auto;object-fit:contain}
+.nav .sp{flex:1}
+.nav .ig{
+  font-weight:700;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;
+  text-decoration:none;color:var(--rojo);white-space:nowrap;
+}
+.nav .ig:hover{text-decoration:underline}
+@media(max-width:520px){.nav .ig{display:none}}
+
+.cta{
+  display:inline-flex;align-items:center;gap:10px;
+  background:var(--rojo-vivo);color:var(--crema);
+  font-family:var(--display);font-size:clamp(.95rem,2.4vw,1.08rem);
+  text-decoration:none;padding:14px 22px;cursor:pointer;
+  border:3px solid var(--bordo);border-radius:4px;box-shadow:5px 5px 0 var(--bordo);
+  transition:transform .12s ease, box-shadow .12s ease, background .2s;
+}
+.cta:hover{background:#E33A3A;transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--bordo)}
+.cta:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--bordo)}
+.cta.chico{padding:9px 15px;font-size:.85rem;box-shadow:3px 3px 0 var(--bordo)}
+.cta.chico:hover{box-shadow:5px 5px 0 var(--bordo)}
+.cta.claro{background:var(--crema);color:var(--rojo)}
+.cta.claro:hover{background:#fff}
+.wa{width:1.05em;height:1.05em;flex:none}
+
+footer{background:var(--bordo-hondo);color:#D9AFAA;text-align:center;padding:34px var(--pad) 40px}
+footer .logo{width:170px;height:auto;object-fit:contain;margin:0 auto 18px;background:var(--crema);padding:12px 20px;border-radius:14px;box-shadow:0 8px 20px rgba(0,0,0,.32)}
+footer p{margin:0;font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;line-height:1.9}
+footer a{color:var(--crema-humo);text-decoration:none;border-bottom:1px solid rgba(250,245,241,.35)}
+
+/* ==========================================================================
+   Carrito
+   ========================================================================== */
+
+/* contador en el encabezado */
+.cart-badge{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-width:1.35em;height:1.35em;padding:0 .35em;margin-left:.15em;
+  border-radius:999px;background:var(--crema);color:var(--rojo);
+  font-family:var(--sans);font-weight:800;font-size:.72em;line-height:1;
+  transition:transform .18s var(--ease), background .2s;
+}
+.cta.claro .cart-badge{background:var(--rojo);color:var(--crema)}
+.cart-badge.vacio{opacity:.55}
+.cart-badge.late{transform:scale(1.35)}
+
+/* ---------- lista del pedido ---------------------------------------- */
+.carrito-grid{display:grid;gap:clamp(22px,4vw,38px);grid-template-columns:1fr;align-items:start}
+@media(min-width:900px){.carrito-grid{grid-template-columns:minmax(0,1.4fr) minmax(300px,1fr)}}
+
+.lineas{display:flex;flex-direction:column;gap:12px}
+
+.linea{
+  display:grid;
+  grid-template-columns:76px minmax(0,1fr);
+  gap:14px;align-items:start;
+  background:#fff;border:3px solid rgba(194,12,11,.32);border-radius:10px;
+  padding:12px;
+  transition:border-color .2s, box-shadow .18s var(--ease), transform .18s var(--ease);
+}
+.linea:hover{border-color:var(--rojo);box-shadow:0 8px 18px rgba(110,0,0,.13)}
+.linea.saliendo{opacity:0;transform:translateX(-14px)}
+
+.linea .foto{
+  width:76px;height:76px;border-radius:7px;overflow:hidden;
+  background:var(--rojo);border:2px solid var(--bordo);
+}
+.linea .foto img{width:100%;height:100%;object-fit:cover}
+
+.linea .datos{min-width:0;display:flex;flex-direction:column;gap:6px}
+.linea .titulo{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+.linea h3{
+  font-family:var(--display);font-weight:400;margin:0;
+  font-size:1.05rem;line-height:1.05;color:var(--rojo);text-transform:uppercase;
+}
+.linea .tam{
+  font-size:.6rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;
+  background:var(--rojo);color:var(--crema);padding:3px 8px;border-radius:999px;
+}
+.linea .tam.doble{background:var(--bordo)}
+.linea .detalle{margin:0;font-size:.78rem;line-height:1.5;color:#6B4640}
+.linea .detalle .nota{display:block;color:#8A4A45;font-style:italic;margin-top:2px}
+
+.linea .pie{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:2px}
+.linea .subtotal{font-family:var(--display);font-size:1.05rem;color:var(--tinta);margin-left:auto}
+.linea .quitar{
+  background:none;border:0;padding:2px 0;cursor:pointer;
+  font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;
+  color:#A8564F;border-bottom:2px solid transparent;
+  transition:color .18s, border-color .18s;
+}
+.linea .quitar:hover{color:var(--rojo);border-color:var(--rojo)}
+
+/* carrito vacío */
+.vacio-msg{
+  text-align:center;padding:clamp(34px,7vw,60px) 22px;
+  background:#fff;border:3px dashed rgba(194,12,11,.34);border-radius:12px;
+}
+.vacio-msg h3{
+  font-family:var(--display);font-weight:400;margin:0 0 10px;
+  font-size:1.35rem;color:var(--rojo);text-transform:uppercase;
+}
+.vacio-msg p{margin:0 0 20px;font-size:.9rem;line-height:1.6;color:#6B4640}
+
+/* ---------- formas de pago ------------------------------------------ */
+.pagos{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pago{
+  background:#fff;border:3px solid var(--rojo);border-radius:8px;
+  padding:14px 12px;cursor:pointer;text-align:left;
+  display:flex;flex-direction:column;gap:5px;
+  box-shadow:0 3px 0 rgba(110,0,0,.25);
+  transition:transform .16s var(--ease), box-shadow .16s var(--ease),
+             background .2s, color .2s;
+}
+.pago:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 9px 18px rgba(110,0,0,.28)}
+.pago .nm{
+  font-family:var(--display);font-size:.88rem;text-transform:uppercase;
+  color:var(--rojo);line-height:1.05;
+}
+.pago .note{font-size:.72rem;line-height:1.4;color:#6B4640}
+.pago[aria-pressed="true"]{background:var(--rojo);border-color:var(--bordo);box-shadow:0 3px 0 var(--bordo)}
+.pago[aria-pressed="true"] .nm{color:var(--crema)}
+.pago[aria-pressed="true"] .note{color:#F8D6D2}
+
+/* resumen pegajoso al costado */
+.resumen{position:relative}
+@media(min-width:900px){.resumen{position:sticky;top:104px}}
+.resumen .cta[disabled]{
+  opacity:.45;pointer-events:none;filter:grayscale(.4);
+}
+
+.vaciar{
+  display:block;margin:14px auto 0;background:none;border:0;cursor:pointer;
+  font-size:.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+  color:#B4756F;border-bottom:2px solid transparent;transition:color .18s,border-color .18s;
+}
+.vaciar:hover{color:var(--rojo);border-color:var(--rojo)}
+
+@media (prefers-reduced-motion: reduce){
+  .linea,.pago,.cart-badge{transition-duration:.01ms !important}
+  .linea:hover,.pago:hover{transform:none}
+}
+
+/* link al carrito debajo del boton de agregar */
+.ver-carrito{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  margin-top:12px;text-decoration:none;
+  font-size:.72rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+  color:#F8D6D2;transition:color .18s;
+}
+.ver-carrito:hover{color:var(--crema)}
+.ver-carrito .cart-badge{background:var(--crema);color:var(--rojo)}
+
+/* titulo de la pagina del carrito */
+.titulo-carrito{
+  font-family:var(--display);font-weight:400;
+  margin:6px 0 clamp(20px,4vw,32px);
+  font-size:clamp(2rem,7vw,3rem);line-height:.96;
+  color:var(--rojo);text-transform:uppercase;
+  text-shadow:4px 4px 0 rgba(110,0,0,.14);
+}
+
+/* ==========================================================================
+   Despiece interactivo (producto.html)
+   ========================================================================== */
+.visor{
+  background:linear-gradient(180deg,#FFFDFB 0%,#F6EDE7 100%);
+  border:3px solid var(--rojo);border-radius:12px;
+  box-shadow:8px 8px 0 rgba(194,12,11,.14);
+  padding:clamp(16px,3vw,26px);
+}
+@media(min-width:860px){.visor{position:sticky;top:104px}}
+
+.visor-escena{position:relative}
+
+/* el escenario: las capas se posicionan sobre este sistema de coordenadas */
+.despiece{
+  position:relative;width:min(100%,420px);margin:0 auto;height:320px;
+  transition:height .6s var(--ease);
+}
+
+.capa{
+  position:absolute;left:50%;top:0;
+  padding:0;border:0;background:none;cursor:pointer;
+  transform-origin:50% 0;-webkit-tap-highlight-color:transparent;
+  transition:transform .6s var(--ease), opacity .3s ease;
+}
+.capa .flota{
+  display:block;
+  animation:flotar 6.5s ease-in-out infinite;
+  animation-delay:var(--d,0s);
+  transition:transform .3s var(--ease), opacity .3s ease;
+}
+.capa img{
+  width:100%;height:auto;display:block;
+  filter:drop-shadow(0 7px 11px rgba(70,20,0,.30));
+  transition:filter .3s ease, opacity .3s ease;
+}
+@keyframes flotar{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+
+/* entrada y salida de capas al cambiar tamaño o agregados */
+.capa.entrando .flota{opacity:0;transform:translateY(-22px) scale(.86)}
+.capa.saliendo{pointer-events:none}
+.capa.saliendo .flota{opacity:0;transform:translateY(16px) scale(.9)}
+
+/* al elegir una capa, el resto se apaga */
+.despiece.elegida .capa:not(.on) img{
+  opacity:.38;filter:saturate(.45) drop-shadow(0 4px 6px rgba(70,20,0,.18));
+}
+.capa.on img{filter:drop-shadow(-14px 13px 17px rgba(60,10,0,.42))}
+.capa.on .flota{transform:translateX(4%) scale(1.05)}
+.despiece.armada .capa.on .flota{transform:translateX(11%) scale(1.04)}
+.capa:hover .flota{transform:scale(1.03)}
+
+/* botonera del visor */
+.visor-ctrl{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin-top:16px}
+.visor-ctrl button{
+  background:transparent;border:2px solid var(--rojo);color:var(--rojo);
+  border-radius:999px;padding:9px 17px;cursor:pointer;
+  font-size:.72rem;font-weight:800;letter-spacing:.11em;text-transform:uppercase;
+  transition:background .2s, color .2s, transform .16s var(--ease);
+}
+.visor-ctrl button:hover{background:rgba(194,12,11,.1);transform:translateY(-2px)}
+.visor-ctrl button[aria-pressed="true"]{background:var(--rojo);color:var(--crema)}
+
+/* lectura de la capa activa */
+.lectura{
+  margin-top:14px;background:var(--bordo-hondo);color:var(--crema);
+  border-radius:8px;padding:13px 15px;min-height:76px;
+  border:2px solid rgba(255,255,255,.16);
+}
+.lectura .n{
+  font-size:.6rem;font-weight:800;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--oro);display:block;
+}
+.lectura h3{
+  font-family:var(--display);font-weight:400;margin:6px 0 4px;
+  font-size:1.05rem;line-height:1.1;color:var(--crema);text-transform:uppercase;
+}
+.lectura p{margin:0;font-size:.78rem;line-height:1.5;color:#E9C9C4}
+
+@media (prefers-reduced-motion: reduce){
+  .capa .flota{animation:none}
+  .despiece,.capa,.capa .flota,.capa img{transition-duration:.01ms !important}
+}
+
+/* ==========================================================================
+   Unidades: un acordeón de personalización por cada hamburguesa
+   ========================================================================== */
+.unidades{display:flex;flex-direction:column;gap:10px}
+
+.unidad{
+  border:3px solid rgba(194,12,11,.32);border-radius:10px;background:#fff;
+  overflow:hidden;transition:border-color .2s, box-shadow .2s;
+}
+.unidad.abierta{border-color:var(--rojo);box-shadow:0 8px 20px rgba(194,12,11,.14)}
+
+.unidad-cab{
+  width:100%;display:flex;align-items:center;gap:12px;
+  background:none;border:0;padding:13px 15px;cursor:pointer;text-align:left;
+  transition:background .18s;
+}
+.unidad-cab:hover{background:#FFF6F2}
+.unidad-cab .idx{
+  width:26px;height:26px;flex:none;border-radius:50%;
+  background:var(--rojo);color:var(--crema);
+  font-family:var(--display);font-size:.78rem;
+  display:flex;align-items:center;justify-content:center;
+}
+.unidad-cab .res{flex:1;min-width:0}
+.unidad-cab .nm{
+  font-family:var(--display);font-size:.92rem;color:var(--rojo);
+  text-transform:uppercase;line-height:1.1;display:block;
+}
+.unidad-cab .sub{font-size:.72rem;color:#6B4640;line-height:1.4;display:block;margin-top:2px}
+.unidad-cab .pr{font-family:var(--display);font-size:1rem;color:var(--tinta);flex:none}
+.unidad-cab .chev{
+  flex:none;width:11px;height:11px;border-right:2.5px solid var(--rojo);
+  border-bottom:2.5px solid var(--rojo);transform:rotate(45deg);
+  transition:transform .25s var(--ease);margin-left:2px;
+}
+.unidad.abierta .unidad-cab .chev{transform:rotate(-135deg)}
+
+.unidad-cuerpo{
+  display:grid;grid-template-rows:0fr;
+  transition:grid-template-rows .3s var(--ease);
+}
+.unidad.abierta .unidad-cuerpo{grid-template-rows:1fr}
+.unidad-cuerpo > div{overflow:hidden}
+.unidad-in{padding:0 15px 15px;display:flex;flex-direction:column;gap:14px}
+
+.unidad-quitar{
+  align-self:flex-start;background:none;border:0;padding:2px 0;cursor:pointer;
+  font-size:.66rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;
+  color:#A8564F;border-bottom:2px solid transparent;transition:color .18s,border-color .18s;
+}
+.unidad-quitar:hover{color:var(--rojo);border-color:var(--rojo)}
+
+/* el dip muestra los sabores elegidos */
+.topping .sabores{
+  display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;
+}
+.topping .sabor{
+  font-size:.65rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;
+  background:var(--oro);color:#4A2A00;padding:3px 8px;border-radius:999px;
+}
+
+/* ==========================================================================
+   Modal
+   ========================================================================== */
+.modal{
+  position:fixed;inset:0;z-index:300;
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;background:rgba(42,18,16,.62);
+  opacity:0;pointer-events:none;transition:opacity .22s ease;
+}
+.modal.on{opacity:1;pointer-events:auto}
+
+.modal-caja{
+  background:var(--crema);border:3px solid var(--bordo);border-radius:12px;
+  box-shadow:0 22px 60px rgba(0,0,0,.4);
+  width:min(100%,460px);max-height:86vh;overflow:auto;
+  padding:clamp(20px,4vw,30px);
+  transform:translateY(14px) scale(.97);
+  transition:transform .26s var(--ease);
+}
+.modal.on .modal-caja{transform:none}
+
+.modal-caja .k{margin-bottom:6px}
+.modal-caja h2{
+  font-family:var(--display);font-weight:400;margin:0 0 12px;
+  font-size:clamp(1.3rem,4vw,1.7rem);line-height:1.05;
+  color:var(--rojo);text-transform:uppercase;
+}
+.modal-caja p{margin:0 0 14px;font-size:.9rem;line-height:1.6;color:#4E322E;white-space:pre-line}
+.modal-acciones{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.modal-acciones .cta{flex:1;justify-content:center;min-width:140px}
+
+.modal-cerrar{
+  float:right;background:none;border:0;cursor:pointer;
+  font-size:1.5rem;line-height:1;color:#A8564F;padding:0 0 0 12px;
+  transition:color .18s,transform .18s var(--ease);
+}
+.modal-cerrar:hover{color:var(--rojo);transform:scale(1.15)}
+
+/* grilla de sabores del dip */
+.sabores-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:9px}
+.sabor-op{
+  background:#fff;border:3px solid var(--rojo);border-radius:8px;
+  padding:12px 10px;cursor:pointer;
+  font-family:var(--display);font-size:.82rem;color:var(--rojo);
+  text-transform:uppercase;line-height:1.1;
+  box-shadow:0 3px 0 rgba(110,0,0,.25);
+  transition:transform .16s var(--ease), box-shadow .16s var(--ease), background .2s, color .2s;
+}
+.sabor-op:hover{
+  background:var(--rojo);color:var(--crema);
+  transform:translateY(-3px) scale(1.04);box-shadow:0 9px 18px rgba(110,0,0,.3);
+}
+
+/* ==========================================================================
+   Entrega y estado de la tienda
+   ========================================================================== */
+.entregas{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.entrega-op{
+  background:var(--crema);border:3px solid var(--bordo);border-radius:8px;
+  padding:15px 12px;cursor:pointer;text-align:left;
+  display:flex;flex-direction:column;gap:4px;
+  box-shadow:0 3px 0 rgba(74,2,2,.5);
+  transition:transform .16s var(--ease), box-shadow .16s var(--ease), background .2s;
+}
+.entrega-op:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 10px 20px rgba(0,0,0,.28)}
+.entrega-op .nm{
+  font-family:var(--display);font-size:.88rem;color:var(--rojo);
+  text-transform:uppercase;line-height:1.05;
+}
+.entrega-op .note{font-size:.72rem;line-height:1.4;color:#6B4640}
+.entrega-op[disabled]{opacity:.45;cursor:not-allowed;transform:none}
+
+#aviso-tienda{
+  background:var(--oro);color:#4A2A00;text-align:center;
+  padding:11px var(--pad);font-size:.82rem;font-weight:700;line-height:1.45;
+}
+.venta-off{opacity:.4;pointer-events:none;filter:grayscale(.55)}
+
+@media (prefers-reduced-motion: reduce){
+  .modal,.modal-caja,.unidad-cuerpo,.sabor-op,.entrega-op{transition-duration:.01ms !important}
+  .sabor-op:hover,.entrega-op:hover{transform:none}
+}
+
+/* ---------- leyenda de papas incluidas ---------- */
+.incluye-papas{
+  margin:0;font-size:.74rem;font-weight:800;line-height:1.4;
+  letter-spacing:.02em;color:#8A5A00;
+  background:rgba(242,178,46,.2);border-left:3px solid var(--oro);
+  padding:6px 10px;border-radius:0 5px 5px 0;
+}
+.card .incluye-papas{margin:2px 0 0}
+
+/* ---------- desglose del subtotal ---------- */
+.total .fila.base{color:var(--crema);font-weight:700}
+.total .fila.extra{padding-left:14px;font-size:.79rem;color:#F0BDB8}
+.total .fila.extra span:first-child::before{content:'+ ';opacity:.6}
+.total .fila.sub{
+  border-top:1px dashed rgba(255,255,255,.24);
+  margin-top:3px;padding-top:7px;font-weight:700;color:#F8D6D2;
+}
+
+/* ---------- alerta destacada dentro del modal ---------- */
+.alerta{
+  display:flex;gap:11px;align-items:flex-start;
+  background:#FFF4D6;border:3px solid var(--oro);
+  border-left-width:7px;border-radius:8px;
+  padding:13px 15px;margin:0 0 16px;
+}
+.alerta .ico{font-size:1.15rem;line-height:1.2;flex:none}
+.alerta p{
+  margin:0;font-size:.85rem;line-height:1.55;color:#4A2A00;white-space:normal;
+}
+.alerta strong{font-weight:800}
+
+/* si el mapa está oculto, el de confirmar se queda con toda la fila */
+#me-confirmar{flex:1;justify-content:center}
+
+/* ---------- botones dentro de las tarjetas de información ----------
+   Van con el selector .info a.info-btn a propósito: la página trae una
+   regla .info a que pinta los enlaces de rojo y les mete un subrayado.
+   Sobre un botón de fondo rojo eso dejaba el texto ilegible.          */
+.info a.info-btn{
+  margin-top:12px;
+  color:var(--crema);
+  border:3px solid var(--bordo);
+  box-shadow:3px 3px 0 var(--bordo);
+  text-decoration:none;
+
+  /* Alfa Slab One es una tipografía de titular y solo existe en peso 400:
+     a 13px, y con el 700 que le mete .info a, el navegador la engorda
+     artificialmente y los bordes se empastan. Poppins sí tiene un 800 real
+     y a este tamaño se lee limpia.                                        */
+  font-family:var(--sans);
+  font-weight:800;
+  font-size:.76rem;
+  letter-spacing:.03em;
+  -webkit-font-smoothing:antialiased;
+}
+.info a.info-btn:hover{
+  color:#fff;
+  box-shadow:5px 5px 0 var(--bordo);
+}
+/* el ícono toma el color del texto, así viaja siempre con él */
+.ig-ico{width:1.05em;height:1.05em;flex:none;fill:currentColor}

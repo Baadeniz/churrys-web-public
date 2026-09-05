@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Panel · Churry's</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/brand.css">
+<style>
+/* --------------------------------------------------------------------------
+   Estilos propios del panel. No se comparten con la web pública.
+   -------------------------------------------------------------------------- */
+.panel{max-width:1120px;margin:0 auto;padding:clamp(22px,4vw,44px) var(--pad)}
+
+.login{max-width:400px;margin:clamp(40px,10vh,90px) auto}
+.login .caja{
+  background:#fff;border:3px solid var(--rojo);border-radius:12px;
+  padding:clamp(22px,4vw,32px);box-shadow:8px 8px 0 rgba(194,12,11,.14);
+}
+.login input{
+  width:100%;padding:13px 15px;font:inherit;font-size:1rem;
+  border:3px solid rgba(194,12,11,.35);border-radius:8px;margin:6px 0 14px;
+  transition:border-color .2s;
+}
+.login input:focus{border-color:var(--rojo);outline:none}
+.login .cta{width:100%;justify-content:center}
+.login .err{color:var(--rojo);font-size:.82rem;font-weight:700;margin:10px 0 0;min-height:1.2em}
+
+.tarjetas{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}
+.metrica{
+  background:#fff;border:3px solid var(--rojo);border-radius:10px;
+  padding:16px 18px;box-shadow:5px 5px 0 rgba(194,12,11,.13);
+}
+.metrica .lbl{
+  font-size:.63rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;
+  color:#B4756F;display:block;
+}
+.metrica .val{
+  font-family:var(--display);font-size:clamp(1.5rem,4vw,2rem);
+  line-height:1.1;color:var(--rojo);display:block;margin-top:6px;
+}
+.metrica .pie{font-size:.72rem;color:#6B4640;display:block;margin-top:4px}
+
+.seccion{margin:clamp(26px,5vw,44px) 0 0}
+.seccion > h2{
+  font-family:var(--display);font-weight:400;margin:0 0 4px;
+  font-size:clamp(1.3rem,4vw,1.8rem);color:var(--rojo);text-transform:uppercase;
+}
+.seccion > .ayuda{margin:0 0 16px;font-size:.84rem;line-height:1.55;color:#6B4640;max-width:64ch}
+
+table.datos{width:100%;border-collapse:collapse;background:#fff;
+  border:3px solid rgba(194,12,11,.3);border-radius:10px;overflow:hidden}
+table.datos th,table.datos td{padding:11px 14px;text-align:left;font-size:.85rem;
+  border-bottom:1px solid rgba(194,12,11,.14)}
+table.datos th{background:var(--rojo);color:var(--crema);
+  font-size:.64rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+table.datos tr:last-child td{border-bottom:0}
+table.datos td.num{text-align:right;font-family:var(--display);color:var(--tinta)}
+.tabla-scroll{overflow-x:auto}
+
+.switches{display:flex;flex-direction:column;gap:11px}
+.switch{
+  display:flex;align-items:center;gap:15px;
+  background:#fff;border:3px solid rgba(194,12,11,.3);border-radius:9px;padding:13px 16px;
+  transition:border-color .2s, background .2s;
+}
+.switch.on{border-color:var(--rojo);background:#FFF6F2}
+.switch .txt{flex:1;min-width:0}
+.switch .nm{font-family:var(--display);font-size:.9rem;color:var(--rojo);
+  text-transform:uppercase;display:block;line-height:1.1}
+.switch .note{font-size:.74rem;color:#6B4640;display:block;margin-top:3px;line-height:1.45}
+
+.palanca{
+  flex:none;width:56px;height:31px;border-radius:999px;border:3px solid var(--bordo);
+  background:#C9BAB6;cursor:pointer;position:relative;padding:0;
+  transition:background .22s var(--ease);
+}
+.palanca::after{
+  content:'';position:absolute;top:2px;left:2px;width:21px;height:21px;
+  border-radius:50%;background:var(--crema);
+  transition:transform .22s var(--ease);
+}
+.palanca[aria-checked="true"]{background:#2E9E4F}
+.palanca[aria-checked="true"]::after{transform:translateX(25px)}
+
+.admin-nota{
+  background:var(--oro);color:#4A2A00;border-radius:9px;
+  padding:14px 17px;font-size:.82rem;line-height:1.6;margin:0 0 clamp(20px,4vw,30px);
+}
+.admin-nota strong{display:block;margin-bottom:4px;font-size:.88rem}
+
+.acciones-admin{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.vacio-tabla{padding:26px;text-align:center;color:#6B4640;font-size:.86rem;
+  background:#fff;border:3px dashed rgba(194,12,11,.3);border-radius:10px}
+</style>
+</head>
+<body>
+
+<div class="top"><div class="rail"></div></div>
+
+<header>
+  <div class="nav">
+    <a href="churrys.html"><img class="logo" src="logo churrys transparente.png" alt="Churry's"></a>
+    <span class="sp"></span>
+    <span class="ig">Panel interno</span>
+    <button class="cta chico" type="button" id="salir" hidden>Salir</button>
+  </div>
+</header>
+
+<!-- ------------------------------------------------------------- login -->
+<main class="login" id="login">
+  <div class="caja">
+    <p class="k">Acceso restringido</p>
+    <h2 style="font-family:var(--display);font-weight:400;color:var(--rojo);text-transform:uppercase;margin:6px 0 16px">Panel de Churry's</h2>
+    <label class="sr" for="clave">Clave</label>
+    <input type="password" id="clave" placeholder="Clave" autocomplete="current-password">
+    <button class="cta claro" type="button" id="entrar" style="background:var(--rojo);color:var(--crema)">Entrar</button>
+    <p class="err" id="err"></p>
+  </div>
+</main>
+
+<!-- ------------------------------------------------------------- panel -->
+<main class="panel" id="panel" hidden>
+
+  <p class="admin-nota">
+    <strong>Leé esto antes de usarlo</strong>
+    Los datos viven en este navegador, no en un servidor. El panel solo cuenta los pedidos
+    que salieron de este mismo equipo, y los interruptores apagan la venta acá, no para el
+    resto de los clientes. Para contabilidad real y un corte que valga para todos hace falta
+    un backend.
+  </p>
+
+  <section class="seccion" style="margin-top:0">
+    <h2>Números</h2>
+    <p class="ayuda">Resumen de lo registrado en este navegador.</p>
+    <div class="tarjetas" id="metricas"></div>
+  </section>
+
+  <section class="seccion">
+    <h2>Lo que más sale</h2>
+    <p class="ayuda">Ordenado por unidades vendidas.</p>
+    <div class="tabla-scroll" id="ranking"></div>
+  </section>
+
+  <section class="seccion">
+    <h2>Últimos pedidos</h2>
+    <div class="tabla-scroll" id="historial"></div>
+    <div class="acciones-admin">
+      <button class="cta chico" type="button" id="exportar">Descargar CSV</button>
+      <button class="cta chico claro" type="button" id="borrar">Borrar el historial</button>
+    </div>
+  </section>
+
+  <section class="seccion">
+    <h2>Control de la tienda</h2>
+    <p class="ayuda">
+      Cortá la venta cuando no des abasto o se termine el stock. Los botones de compra
+      quedan apagados y se muestra el cartel de aviso.
+    </p>
+    <div class="switches" id="switches"></div>
+
+    <div style="margin-top:14px">
+      <p class="k" style="margin-bottom:8px">Cartel de aviso</p>
+      <textarea class="nota" id="aviso-texto" rows="2"
+        placeholder="Ej: Hoy cerramos temprano, cocina hasta las 22."></textarea>
+      <div class="acciones-admin">
+        <button class="cta chico" type="button" id="guardar-aviso">Guardar aviso</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<div class="rail rojo"></div>
+
+<footer>
+  <p>Panel interno · Churry's</p>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="assets/menu.js"></script>
+<script src="assets/tienda.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  var M = window.CHURRYS, T = window.TIENDA;
+  var $ = function (id) { return document.getElementById(id); };
+
+  /* ======================================================================
+     PORTÓN DE ACCESO
+     Esto NO es seguridad: la clave viaja en el código y cualquiera que abra
+     el archivo la ve. Sirve para que no entre alguien de casualidad.
+     Para algo serio hace falta login contra un servidor.
+     ====================================================================== */
+  var CLAVE  = 'churrys2026';                 /* cambiala por la que quieras */
+  var SESION = 'churrys.admin.sesion';
+
+  function entrar() {
+    $('login').hidden = true;
+    $('panel').hidden = false;
+    $('salir').hidden = false;
+    pintar();
+  }
+
+  $('entrar').addEventListener('click', probar);
+  $('clave').addEventListener('keydown', function (ev) {
+    if (ev.key === 'Enter') probar();
+  });
+
+  function probar() {
+    if ($('clave').value === CLAVE) {
+      try { sessionStorage.setItem(SESION, '1'); } catch (e) {}
+      $('err').textContent = '';
+      entrar();
+    } else {
+      $('err').textContent = 'Clave incorrecta.';
+      $('clave').value = '';
+      $('clave').focus();
+    }
+  }
+
+  $('salir').addEventListener('click', function () {
+    try { sessionStorage.removeItem(SESION); } catch (e) {}
+    location.reload();
+  });
+
+  try {
+    if (sessionStorage.getItem(SESION) === '1') entrar();
+  } catch (e) {}
+
+  /* ======================================================================
+     MÉTRICAS
+     ====================================================================== */
+  function tarjeta(lbl, val, pie) {
+    var d = document.createElement('div');
+    d.className = 'metrica';
+    d.innerHTML = '<span class="lbl"></span><span class="val"></span><span class="pie"></span>';
+    d.querySelector('.lbl').textContent = lbl;
+    d.querySelector('.val').textContent = val;
+    d.querySelector('.pie').textContent = pie || '';
+    return d;
+  }
+
+  function pintarMetricas(m) {
+    var hoy = new Date(); hoy.setHours(0, 0, 0, 0);
+    var mh = T.metricas(hoy);
+
+    var cont = $('metricas');
+    cont.innerHTML = '';
+    cont.appendChild(tarjeta('Pedidos', m.pedidos, mh.pedidos + ' hoy'));
+    cont.appendChild(tarjeta('Facturado', M.money(m.facturado), M.money(mh.facturado) + ' hoy'));
+    cont.appendChild(tarjeta('Ticket promedio', M.money(m.ticket),
+                             m.pedidos ? 'sobre ' + m.pedidos + ' pedidos' : 'sin datos'));
+    cont.appendChild(tarjeta('Hamburguesas', m.unidades,
+                             m.pedidos ? (m.unidades / m.pedidos).toFixed(1) + ' por pedido' : 'sin datos'));
+  }
+
+  function tabla(cont, cols, filas, vacio) {
+    cont.innerHTML = '';
+    if (!filas.length) {
+      var v = document.createElement('div');
+      v.className = 'vacio-tabla';
+      v.textContent = vacio;
+      cont.appendChild(v);
+      return;
+    }
+    var t = document.createElement('table');
+    t.className = 'datos';
+    var thead = '<tr>' + cols.map(function (c) {
+      return '<th' + (c.num ? ' style="text-align:right"' : '') + '>' + c.t + '</th>';
+    }).join('') + '</tr>';
+    t.innerHTML = '<thead>' + thead + '</thead><tbody></tbody>';
+    var tb = t.querySelector('tbody');
+    filas.forEach(function (f) {
+      var tr = document.createElement('tr');
+      cols.forEach(function (c, i) {
+        var td = document.createElement('td');
+        if (c.num) td.className = 'num';
+        td.textContent = f[i];
+        tr.appendChild(td);
+      });
+      tb.appendChild(tr);
+    });
+    cont.appendChild(t);
+  }
+
+  function pintarRanking(m) {
+    tabla($('ranking'),
+      [{ t: 'Producto' }, { t: 'Unidades', num: true }, { t: 'Facturado', num: true }],
+      m.ranking.map(function (r) { return [r.nombre, r.unidades, M.money(r.facturado)]; }),
+      'Todavía no hay ventas registradas en este navegador.');
+  }
+
+  function pintarHistorial(m) {
+    tabla($('historial'),
+      [{ t: '#' }, { t: 'Cuándo' }, { t: 'Entrega' }, { t: 'Pago' }, { t: 'Total', num: true }],
+      m.lista.slice(0, 25).map(function (p) {
+        var f = new Date(p.fecha);
+        return [
+          p.n,
+          f.toLocaleDateString('es-AR') + ' ' + f.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }),
+          p.entrega || '—',
+          p.pago || '—',
+          M.money(p.total)
+        ];
+      }),
+      'Sin pedidos por ahora.');
+  }
+
+  /* ======================================================================
+     INTERRUPTORES
+     ====================================================================== */
+  var LLAVES = [
+    { k: 'abierto',         nm: 'Recibir pedidos',
+      note: 'Apagalo y la web deja de tomar pedidos, con cartel de aviso.' },
+    { k: 'ventaHabilitada', nm: 'Botones de compra',
+      note: 'Apaga “Agregar al carrito” y el envío del pedido, sin cerrar del todo.' },
+    { k: 'retiro',          nm: 'Retiro por el local',
+      note: 'Ofrecer la opción de que lo pasen a buscar.' },
+    { k: 'delivery',        nm: 'Delivery',
+      note: 'Ofrecer envío a domicilio.' }
+  ];
+
+  function pintarSwitches() {
+    var c = T.config();
+    var cont = $('switches');
+    cont.innerHTML = '';
+
+    LLAVES.forEach(function (l) {
+      var on = !!c[l.k];
+      var row = document.createElement('div');
+      row.className = 'switch' + (on ? ' on' : '');
+      row.innerHTML =
+        '<span class="txt"><span class="nm"></span><span class="note"></span></span>' +
+        '<button class="palanca" type="button" role="switch"></button>';
+      row.querySelector('.nm').textContent   = l.nm;
+      row.querySelector('.note').textContent = l.note;
+
+      var p = row.querySelector('.palanca');
+      p.setAttribute('aria-checked', on ? 'true' : 'false');
+      p.setAttribute('aria-label', l.nm);
+      p.addEventListener('click', function () {
+        var parcial = {};
+        parcial[l.k] = !T.config()[l.k];
+        T.setConfig(parcial);
+        pintarSwitches();
+        M.toast(l.nm + ': ' + (parcial[l.k] ? 'activado' : 'apagado'));
+      });
+
+      cont.appendChild(row);
+    });
+
+    $('aviso-texto').value = c.aviso || '';
+  }
+
+  $('guardar-aviso').addEventListener('click', function () {
+    T.setConfig({ aviso: $('aviso-texto').value.trim() });
+    M.toast('Aviso guardado.');
+  });
+
+  /* ======================================================================
+     ACCIONES
+     ====================================================================== */
+  $('borrar').addEventListener('click', function () {
+    if (!T.pedidos().length) { M.toast('No hay nada que borrar.'); return; }
+    if (!confirm('¿Borrar todo el historial de pedidos? No se puede deshacer.')) return;
+    T.borrarPedidos();
+    pintar();
+    M.toast('Historial borrado.');
+  });
+
+  $('exportar').addEventListener('click', function () {
+    var lista = T.pedidos();
+    if (!lista.length) { M.toast('No hay pedidos para exportar.'); return; }
+
+    var filas = [['numero', 'fecha', 'entrega', 'pago', 'total', 'items']];
+    lista.forEach(function (p) {
+      filas.push([
+        p.n,
+        p.fecha,
+        p.entrega || '',
+        p.pago || '',
+        p.total,
+        (p.items || []).map(function (i) {
+          return i.name + ' ' + i.size + ' x' + i.qty;
+        }).join(' | ')
+      ]);
+    });
+
+    var csv = filas.map(function (f) {
+      return f.map(function (c) { return '"' + String(c).replace(/"/g, '""') + '"'; }).join(',');
+    }).join('\r\n');
+
+    /* el visor puede bloquear la descarga: dejamos también el copiado */
+    try {
+      var url = URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' }));
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'churrys-pedidos.csv';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+      M.toast('CSV descargado.');
+    } catch (e) {
+      M.copiar(csv).then(
+        function () { M.toast('No se pudo descargar: el CSV quedó copiado.'); },
+        function () { M.toast('No se pudo exportar en este navegador.'); }
+      );
+    }
+  });
+
+  /* ======================================================================
+     PINTAR TODO
+     ====================================================================== */
+  function pintar() {
+    var m = T.metricas();
+    pintarMetricas(m);
+    pintarRanking(m);
+    pintarHistorial(m);
+    pintarSwitches();
+  }
+
+  window.addEventListener('pedidos:cambio', pintar);
+})();
+</script>
+</body>
+</html>

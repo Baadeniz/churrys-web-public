@@ -1,0 +1,43 @@
+/* ==========================================================================
+   Churry's · miel derritiendose en el encabezado
+   Solo se aplica cuando <body> tiene la clase .honey-on, que agrega
+   assets/honey-header.js al detectar ?burger=honey en la URL.
+   Origen: Encabezado-Honey-para-Claude-Code.html
+   ========================================================================== */
+
+/* la miel reemplaza el fondo crema del encabezado */
+body.honey-on header{
+  background:#8A4404;              /* base calida debajo de la miel */
+  border-bottom:0;
+  overflow:visible;               /* deja que los chorreados salgan de la barra */
+}
+body.honey-on .nav{
+  position:relative;
+  z-index:2;                      /* logo, IG y boton por encima de la miel */
+  padding-top:14px;
+  padding-bottom:14px;
+}
+body.honey-on .nav .logo{
+  filter:drop-shadow(0 2px 5px rgba(74,26,0,.5));
+}
+body.honey-on .nav .ig{
+  color:#5A2400;
+  font-weight:800;
+  text-shadow:0 1px 0 rgba(255,232,170,.55);
+}
+body.honey-on .nav .cta{
+  background:#C20C0B;
+  border-color:#4A0202;
+  box-shadow:3px 3px 0 rgba(74,2,2,.75);
+}
+body.honey-on .nav .cta:hover{background:#D82828}
+
+/* la capa de miel */
+.honey-drip{
+  position:absolute;
+  top:0;left:0;width:100%;
+  z-index:1;
+  display:block;
+  overflow:visible;
+  pointer-events:none;
+}

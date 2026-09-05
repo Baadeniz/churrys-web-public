@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Churry's — Home Of The American Burgers · Merlo, San Luis</title>
+<meta name="description" content="Hamburguesas artesanales en Merlo, San Luis. Mirá el despiece de cada una, capa por capa, y pedí por WhatsApp.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Lobster+Two:ital,wght@1,700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/brand.css">
+<style>
+:root{
+  --rojo:#C20C0B;
+  --rojo-vivo:#D82828;
+  --bordo:#6E0000;
+  --bordo-hondo:#4A0202;
+  --crema:#FAF5F1;
+  --crema-humo:#F0E8E8;
+  --oro:#F2B22E;
+  --tinta:#2A1210;
+
+  --display:'Alfa Slab One', Rockwell, Georgia, serif;
+  --script:'Lobster Two', 'Brush Script MT', cursive;
+  --sans:'Poppins', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --pad:clamp(18px,5vw,64px);
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-padding-top:88px}
+body{
+  margin:0;background:var(--crema);color:var(--tinta);
+  font-family:var(--sans);font-weight:500;overflow-x:hidden;
+}
+img{display:block;max-width:100%;-webkit-user-drag:none;user-select:none}
+a{color:inherit}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--oro);outline-offset:3px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- damero de la marca ---------- */
+.rail{
+  --sq:clamp(10px,2.6vw,16px);
+  --c:var(--crema);
+  height:calc(var(--sq)*2);width:100%;
+  background-image:
+    repeating-linear-gradient(90deg,var(--c) 0 var(--sq),transparent var(--sq) calc(var(--sq)*2)),
+    repeating-linear-gradient(90deg,transparent 0 var(--sq),var(--c) var(--sq) calc(var(--sq)*2));
+  background-size:100% 50%,100% 50%;
+  background-position:0 0,0 100%;
+  background-repeat:no-repeat;
+}
+.rail.rojo{--c:var(--rojo-vivo)}
+
+/* ---------- barra superior ---------- */
+.top{background:var(--rojo)}
+header{background:var(--crema);position:sticky;top:0;z-index:60;border-bottom:3px solid var(--rojo)}
+.nav{max-width:1240px;margin:0 auto;padding:10px var(--pad);display:flex;align-items:center;gap:14px}
+.nav .logo{height:clamp(38px,7.2vw,54px);width:auto;object-fit:contain}
+.nav .sp{flex:1}
+.nav .ig{
+  font-weight:700;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;
+  text-decoration:none;color:var(--rojo);white-space:nowrap;
+}
+.nav .ig:hover{text-decoration:underline}
+@media(max-width:520px){.nav .ig{display:none}}
+
+/* ---------- botones ---------- */
+.cta{
+  display:inline-flex;align-items:center;gap:10px;
+  background:var(--rojo-vivo);color:var(--crema);
+  font-family:var(--display);font-size:clamp(.95rem,2.4vw,1.08rem);
+  text-decoration:none;padding:14px 22px;
+  border:3px solid var(--bordo);border-radius:4px;box-shadow:5px 5px 0 var(--bordo);
+  transition:transform .12s ease, box-shadow .12s ease, background .2s;
+}
+.cta:hover{background:#E33A3A;transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--bordo)}
+.cta:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--bordo)}
+.cta.chico{padding:9px 15px;font-size:.85rem;box-shadow:3px 3px 0 var(--bordo)}
+.cta.chico:hover{box-shadow:5px 5px 0 var(--bordo)}
+.cta.claro{background:var(--crema);color:var(--rojo)}
+.cta.claro:hover{background:#fff}
+.wa{width:1.05em;height:1.05em;flex:none}
+
+
+/* ---------- marquesina ---------- */
+.marquee{
+  background:var(--bordo);overflow:hidden;padding:11px 0;
+  border-top:3px solid var(--bordo-hondo);border-bottom:3px solid var(--bordo-hondo);
+}
+.marquee div{display:flex;width:max-content;animation:slide 36s linear infinite}
+.marquee span{
+  font-family:var(--display);font-size:.82rem;letter-spacing:.12em;color:var(--crema-humo);
+  padding-right:26px;white-space:nowrap;text-transform:uppercase;
+}
+.marquee i{color:var(--oro);font-style:normal;padding-right:26px}
+@keyframes slide{to{transform:translateX(-50%)}}
+
+/* ---------- la carta ---------- */
+.carta{max-width:1240px;margin:0 auto;padding:clamp(40px,7vw,78px) var(--pad)}
+.head{margin:0 0 clamp(24px,4vw,38px)}
+.head .k{font-size:.68rem;font-weight:800;letter-spacing:.24em;text-transform:uppercase;color:#B4756F;margin:0}
+.head h2{
+  font-family:var(--display);font-weight:400;margin:8px 0 0;
+  font-size:clamp(2rem,7vw,3.1rem);line-height:.96;color:var(--rojo);
+  text-shadow:4px 4px 0 rgba(110,0,0,.16);text-transform:uppercase;
+}
+.head p{margin:12px 0 0;max-width:52ch;font-size:.95rem;line-height:1.6;color:#5B3A36}
+
+.grid{display:grid;gap:clamp(16px,2.4vw,22px);grid-template-columns:1fr}
+@media(min-width:640px){.grid{grid-template-columns:1fr 1fr}}
+@media(min-width:1060px){.grid{grid-template-columns:repeat(4,1fr)}}
+
+/* las tarjetas del catalogo viven en assets/brand.css (.card / .compra / .btn-size) */
+
+/* ---------- cómo pedir ---------- */
+.pedir{background:var(--crema-humo);border-top:3px solid var(--rojo)}
+.pedir-in{max-width:1240px;margin:0 auto;padding:clamp(40px,7vw,74px) var(--pad)}
+.info{display:grid;gap:clamp(16px,2.4vw,24px);grid-template-columns:1fr;margin:clamp(22px,4vw,34px) 0 0}
+@media(min-width:760px){.info{grid-template-columns:repeat(3,1fr)}}
+.info div{background:var(--crema);border-left:5px solid var(--rojo-vivo);padding:18px 20px;border-radius:0 6px 6px 0}
+.info h3{font-family:var(--display);font-weight:400;margin:0 0 8px;font-size:.98rem;text-transform:uppercase;color:var(--rojo)}
+.info p{margin:0;font-size:.89rem;line-height:1.6;color:#4E322E}
+.info a{color:var(--rojo);font-weight:700;text-decoration:none;border-bottom:2px solid rgba(194,12,11,.3)}
+.cierre{
+  margin:clamp(28px,5vw,42px) 0 0;padding:clamp(22px,4vw,32px);
+  background:var(--rojo);border-radius:8px;color:var(--crema);
+  display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;
+}
+.cierre p{margin:0;font-family:var(--display);font-size:clamp(1.15rem,3.6vw,1.65rem);line-height:1.15;text-transform:uppercase}
+.cierre small{
+  display:block;font-family:var(--sans);font-weight:600;font-size:.76rem;
+  letter-spacing:.06em;color:#F7BDB7;margin-top:8px;text-transform:none;
+}
+
+footer{background:var(--bordo-hondo);color:#D9AFAA;text-align:center;padding:34px var(--pad) 40px}
+footer .logo{width:170px;height:auto;object-fit:contain;margin:0 auto 18px;background:var(--crema);padding:12px 20px;border-radius:14px;box-shadow:0 8px 20px rgba(0,0,0,.32)}
+footer p{margin:0;font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;line-height:1.9}
+footer a{color:var(--crema-humo);text-decoration:none;border-bottom:1px solid rgba(250,245,241,.35)}
+
+
+/* ---------- portada de marca ----------
+   La hamburguesa se monta sobre el nombre, como en una marquesina:
+   el texto se lee por los costados y la foto tapa el centro.        */
+.portada{
+  position:relative;
+  background:
+    radial-gradient(ellipse 90% 75% at 50% 42%, #7E0202 0%, #4A0202 52%, #2B0000 100%),
+    var(--bordo-hondo);
+  color:var(--crema);
+  overflow:hidden;
+}
+
+/* resplandor cálido detrás de la hamburguesa */
+.portada::before{
+  content:'';position:absolute;left:50%;top:38%;
+  width:min(78vw,760px);aspect-ratio:1;transform:translate(-50%,-50%);
+  background:radial-gradient(circle, rgba(242,178,46,.24) 0%, transparent 62%);
+  pointer-events:none;
+}
+
+.portada-in{
+  position:relative;z-index:1;
+  max-width:1240px;margin:0 auto;
+  padding:clamp(30px,6vw,64px) var(--pad) clamp(34px,6vw,64px);
+  text-align:center;
+}
+
+/* --- el nombre y la foto comparten el mismo lugar --- */
+.portada-escena{
+  position:relative;
+  display:flex;justify-content:center;
+  padding-bottom:12px;          /* aire para el vaivén de la foto */
+}
+
+/* el nombre va detrás, centrado un poco más arriba que la foto */
+.marca{
+  position:absolute;left:50%;top:43%;
+  transform:translate(-50%,-50%);
+  font-family:var(--display);font-weight:400;
+  font-size:min(13rem, calc((100vw - 2 * var(--pad)) / 5.6));
+  line-height:.9;letter-spacing:-.01em;white-space:nowrap;
+  color:var(--crema);text-transform:uppercase;
+  text-shadow:0 6px 26px rgba(0,0,0,.5);
+  user-select:none;pointer-events:none;
+}
+
+/* la foto queda en el flujo: ella define el alto del escenario */
+.portada-burger{
+  position:relative;z-index:1;
+  width:min(42%,415px);height:auto;
+  filter:drop-shadow(0 26px 34px rgba(0,0,0,.62));
+  animation:flotar-burger 6s ease-in-out infinite;
+}
+@keyframes flotar-burger{
+  0%,100%{transform:translateY(-9px)}
+  50%    {transform:translateY(9px)}
+}
+
+/* --- lema, con el mismo espaciado ancho de la referencia --- */
+.portada-lema{
+  font-family:var(--script);font-style:italic;font-weight:700;
+  font-size:clamp(1.3rem,4.4vw,2.3rem);
+  letter-spacing:.02em;text-transform:none;
+  color:#FFD9C9;
+  margin:clamp(6px,1.8vw,16px) 0 0;
+  text-shadow:0 3px 12px rgba(0,0,0,.4);line-height:1.25;
+}
+
+.cta.grande{
+  margin-top:clamp(22px,4vw,32px);
+  font-size:clamp(1.05rem,3vw,1.32rem);
+  padding:17px 42px;
+  background:var(--rojo-vivo);color:var(--crema);
+  border-color:var(--bordo-hondo);box-shadow:6px 6px 0 var(--bordo-hondo);
+}
+.cta.grande:hover{background:#E84A4A;box-shadow:9px 9px 0 var(--bordo-hondo)}
+
+
+/* el ancla del CTA baja suave hasta la carta */
+html{scroll-behavior:smooth}
+
+@media (prefers-reduced-motion: reduce){
+  .marquee div{animation:none}
+  .cta{transition-duration:.01ms}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<div class="top"><div class="rail"></div></div>
+<p id="aviso-tienda" hidden></p>
+
+<header>
+  <div class="nav">
+    <img class="logo" id="logo-nav" alt="Churry's">
+    <span class="sp"></span>
+    <a class="ig" href="https://www.instagram.com/churrys_ar/" target="_blank" rel="noopener">@churrys_ar</a>
+    <a class="cta chico" data-cart-link href="carrito.html">Carrito <span class="cart-badge" data-cart-count>0</span></a>
+  </div>
+</header>
+
+<main>
+<section class="portada">
+  <div class="portada-in">
+
+    <div class="portada-escena">
+      <span class="marca" aria-hidden="true">Churry&rsquo;s</span>
+      <img class="portada-burger" src="assets/portada-crispy.png"
+           alt="Hamburguesa Crispy de Churry&rsquo;s" width="415" height="406">
+    </div>
+
+    <h1 class="portada-lema">Home of the american burgers</h1>
+
+    <a class="cta grande" href="#carta">Ver la Carta</a>
+  </div>
+  <div class="rail rojo"></div>
+</section>
+
+<div class="marquee" aria-hidden="true"><div id="mq"></div></div>
+
+<section class="carta" id="carta">
+  <div class="head">
+    <p class="k">La carta · ocho hamburguesas</p>
+    <h2>Elegí la tuya</h2>
+    <p>Todas van simple o doble. Tocá el tamaño que quieras y en la pantalla siguiente le sumás los agregados antes de mandar el pedido.</p>
+  </div>
+  <div class="grid" id="grid"></div>
+</section>
+
+<section class="pedir">
+  <div class="pedir-in">
+    <div class="head">
+      <p class="k">Cómo pedir</p>
+      <h2>Estamos a un mensaje</h2>
+    </div>
+    <div class="info">
+      <div>
+        <h3>Dónde</h3>
+        <p>Carlos Alric 732<br>Merlo, San Luis</p>
+        <a class="cta chico info-btn" data-mapa href="#" target="_blank" rel="noopener">📍 Ver en el mapa</a>
+      </div>
+      <div>
+        <h3>Cuándo</h3>
+        <p>Lunes a sábados.<br>De 20:00 a 00:00 hs.</p>
+      </div>
+      <div>
+        <h3>Seguinos</h3>
+        <p>Subimos las nuevas, las promos y el detrás de escena de la plancha. Pasá a saludar y enterate primero de todo.</p>
+        <a class="cta chico info-btn ig-btn" href="https://www.instagram.com/churrys_ar/" target="_blank" rel="noopener">
+          <svg class="ig-ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.16-.42-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41 1.27-.06 1.65-.07 4.85-.07M12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63c-.79.3-1.46.72-2.13 1.38C1.35 2.68.93 3.35.63 4.14.33 4.9.13 5.78.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91.3.79.72 1.46 1.38 2.13.67.66 1.34 1.08 2.13 1.38.76.3 1.64.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56.79-.3 1.46-.72 2.13-1.38.66-.67 1.08-1.34 1.38-2.13.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.27-.26-2.15-.56-2.91-.3-.79-.72-1.46-1.38-2.13C21.32 1.35 20.65.93 19.86.63c-.76-.3-1.64-.5-2.91-.56C15.67.01 15.26 0 12 0Zm0 5.84a6.16 6.16 0 1 0 0 12.32 6.16 6.16 0 0 0 0-12.32ZM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm7.85-10.4a1.44 1.44 0 1 1-2.88 0 1.44 1.44 0 0 1 2.88 0Z"/></svg>
+          @churrys_ar
+        </a>
+      </div>
+    </div>
+    <div class="cierre">
+      <p>Hacé tu pedido<small>Armá el carrito y te respondemos por WhatsApp mientras haya stock</small></p>
+      <a class="cta claro" href="carrito.html">Ver mi pedido</a>
+    </div>
+  </div>
+  <div class="rail rojo"></div>
+</section>
+</main>
+
+<footer>
+  <img class="logo" id="logo-foot" alt="Churry's">
+  <p>Home of the american burgers</p>
+  <p>Merlo, San Luis · <a href="https://www.instagram.com/churrys_ar/" target="_blank" rel="noopener">@churrys_ar</a></p>
+</footer>
+
+<script src="assets/menu.js"></script>
+<script src="assets/tienda.js"></script>
+<script src="assets/cart.js"></script>
+<script>
+/* el botón del mapa usa la misma dirección que el modal de retiro */
+const RETIRO = CHURRYS.entrega.filter(function(e){ return e.id === 'retiro' })[0];
+document.querySelectorAll('[data-mapa]').forEach(function(a){
+  if (RETIRO && RETIRO.mapa) a.href = RETIRO.mapa;
+  else a.remove();
+});
+
+const LOGO = encodeURI(CHURRYS.config.logo);
+document.getElementById('logo-nav').src  = LOGO;
+document.getElementById('logo-foot').src = LOGO;
+
+
+/* ============ la carta: 8 hamburguesas, datos en assets/menu.js ============ */
+const grid = document.getElementById('grid');
+
+CHURRYS.burgers.forEach(function(b){
+  const card = document.createElement('article');
+  card.className = 'card';
+  card.innerHTML =
+    '<a class="shot"><img decoding="async"></a>' +
+    '<div class="body">' +
+      '<h3></h3>' +
+      '<p class="sub"></p>' +
+      '<p class="ing"></p>' +
+      '<p class="incluye-papas">🍟 Incluye guarnición de papas fritas</p>' +
+      '<div class="compra">' +
+        '<div class="opcion">' +
+          '<span class="precio"><small>Simple</small><span class="js-simple"></span></span>' +
+          '<a class="btn-size simple" data-venta>Simple</a>' +
+        '</div>' +
+        '<div class="opcion">' +
+          '<span class="precio"><small>Doble</small><span class="js-doble"></span></span>' +
+          '<a class="btn-size doble" data-venta>Doble</a>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+
+  card.querySelector('h3').textContent        = b.name;
+  card.querySelector('.sub').textContent      = b.tag || '';
+  card.querySelector('.ing').textContent      = b.ing || '';
+  card.querySelector('.js-simple').textContent = CHURRYS.money(b.simple);
+  card.querySelector('.js-doble').textContent  = CHURRYS.money(b.doble);
+
+  const urlSimple = CHURRYS.productUrl(b.id, 'simple');
+  card.querySelector('.shot').href            = urlSimple;
+  card.querySelector('.btn-size.simple').href = urlSimple;
+  card.querySelector('.btn-size.doble').href  = CHURRYS.productUrl(b.id, 'doble');
+
+  card.querySelector('.btn-size.simple').setAttribute('aria-label', b.name + ' simple, ' + CHURRYS.money(b.simple));
+  card.querySelector('.btn-size.doble').setAttribute('aria-label',  b.name + ' doble, '  + CHURRYS.money(b.doble));
+
+  CHURRYS.resolveImage(card.querySelector('.shot img'), b.img, b.name);
+  grid.appendChild(card);
+});
+
+/* ============ marquesina ============ */
+document.getElementById('mq').innerHTML =
+  ['Home of the american burgers','Merlo, San Luis','Retiro y delivery','Lunes a sábados de 20:00 a 00:00 hs']
+  .map(function(f){ return '<span>' + f + '</span><i>★</i>' }).join('').repeat(4);
+
+
+</script>
+</body>
+</html>

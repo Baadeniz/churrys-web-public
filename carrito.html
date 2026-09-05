@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tu pedido · Churry's</title>
+<meta name="description" content="Revisá tu pedido, elegí cómo pagás y mandalo por WhatsApp.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Lobster+Two:ital,wght@1,700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/brand.css">
+</head>
+<body>
+
+<div class="top"><div class="rail"></div></div>
+<p id="aviso-tienda" hidden></p>
+
+<header>
+  <div class="nav">
+    <a href="churrys.html"><img class="logo" src="logo churrys transparente.png" alt="Churry's"></a>
+    <span class="sp"></span>
+    <a class="ig" href="https://www.instagram.com/churrys_ar/" target="_blank" rel="noopener">@churrys_ar</a>
+    <a class="cta chico" href="churrys.html#carta">Ver la carta</a>
+  </div>
+</header>
+
+<main class="prod">
+  <a class="volver" href="churrys.html#carta">&larr; Seguir agregando</a>
+
+  <p class="k">Tu pedido</p>
+  <h1 class="titulo-carrito" id="titulo">El carrito</h1>
+
+  <div class="carrito-grid">
+
+    <!-- ------------------------------ las líneas del pedido -->
+    <section>
+      <div class="lineas" id="lineas"></div>
+
+      <div class="vacio-msg" id="vacio" hidden>
+        <h3>Todavía no hay nada</h3>
+        <p>Elegí una hamburguesa de la carta, armala como te guste y volvé acá para mandar todo junto.</p>
+        <a class="cta" href="churrys.html#carta">Ver la carta</a>
+      </div>
+    </section>
+
+    <!-- ------------------------------ resumen y envío -->
+    <section class="resumen" id="resumen" hidden>
+
+      <div class="bloque" style="margin-top:0;border-top:0;padding-top:0">
+        <p class="k">¿Cómo abonás?</p>
+        <div class="pagos" id="pagos"></div>
+      </div>
+
+      <div class="bloque">
+        <p class="k">Alguna aclaración</p>
+        <label class="sr" for="nota-general">Aclaraciones del pedido</label>
+        <textarea class="nota" id="nota-general" placeholder="Ej: para retirar 21:30, tocar timbre 2, mandar cubiertos…"></textarea>
+      </div>
+
+      <div class="total">
+        <div class="fila"><span id="l-cant">—</span><span id="v-sub">—</span></div>
+        <div class="fila"><span>Forma de pago</span><span id="v-pago">A elegir</span></div>
+        <div class="fila grande"><span>Total</span><span id="v-total">—</span></div>
+
+        <p class="k" style="color:#F8D6D2;margin:18px 0 10px">¿Cómo lo recibís?</p>
+        <div class="entregas" id="entregas"></div>
+
+        <p class="aviso" id="aviso"></p>
+      </div>
+
+      <button class="vaciar" id="vaciar" type="button">Vaciar el carrito</button>
+    </section>
+
+  </div>
+</main>
+
+<div class="rail rojo"></div>
+
+<footer>
+  <img class="logo" src="logo churrys transparente.png" alt="Churry's">
+  <p>Home of the american burgers</p>
+  <p>Merlo, San Luis · <a href="https://www.instagram.com/churrys_ar/" target="_blank" rel="noopener">@churrys_ar</a></p>
+</footer>
+
+<!-- aviso de retiro / delivery antes de mandar el pedido -->
+<div class="modal" id="modal-entrega" role="dialog" aria-modal="true" aria-labelledby="me-t" hidden>
+  <div class="modal-caja">
+    <button class="modal-cerrar" type="button" data-cerrar aria-label="Cerrar">&times;</button>
+    <p class="k" id="me-k"></p>
+    <h2 id="me-t"></h2>
+    <p id="me-texto"></p>
+    <div class="alerta" id="me-alerta" hidden>
+      <span class="ico" aria-hidden="true">⚠️</span>
+      <p><strong>Importante:</strong> el costo de envío <strong>no está incluido</strong> en este total. Una vez enviado el pedido, te indicamos por WhatsApp el valor del delivery según tu dirección exacta.</p>
+    </div>
+    <p id="me-total" style="font-family:var(--display);color:var(--rojo);font-size:1.3rem;margin:0"></p>
+    <div class="modal-acciones">
+      <a class="cta claro" id="me-mapa" href="#" target="_blank" rel="noopener" hidden>📍 Ver en el mapa</a>
+      <button class="cta" id="me-confirmar" type="button">
+        <svg class="wa" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.46 1.32 4.96L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91C21.96 6.45 17.5 2 12.04 2Zm0 18.15h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.11.82.83-3.04-.2-.31a8.16 8.16 0 0 1-1.26-4.38c0-4.54 3.7-8.23 8.24-8.23 2.2 0 4.27.86 5.82 2.41a8.18 8.18 0 0 1 2.41 5.83c0 4.54-3.7 8.23-8.23 8.23Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.8-.23-.09-.39-.13-.56.12-.16.25-.64.8-.78.97-.14.16-.29.18-.53.06-.25-.12-1.05-.39-2-1.23-.74-.66-1.24-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.14.16-.25.25-.41.08-.16.04-.31-.02-.43-.06-.12-.56-1.35-.77-1.84-.2-.48-.4-.42-.56-.43h-.48c-.16 0-.43.06-.66.31-.23.25-.86.84-.86 2.05s.88 2.38 1 2.54c.12.16 1.73 2.64 4.19 3.7.58.25 1.04.4 1.4.51.59.19 1.12.16 1.54.1.47-.07 1.47-.6 1.68-1.18.2-.58.2-1.08.14-1.18-.06-.11-.23-.17-.48-.29Z"/></svg>
+        <span id="me-boton">Confirmar y enviar</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="assets/menu.js"></script>
+<script src="assets/tienda.js"></script>
+<script src="assets/cart.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  var M = window.CHURRYS, C = window.CARRITO;
+  var $ = function (id) { return document.getElementById(id); };
+
+  var pago    = null;   /* id de la forma de pago elegida */
+  var entrega = null;   /* id del metodo de entrega elegido */
+
+  /* ---------- formas de pago ------------------------------------------ */
+  M.pagos.forEach(function (p) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'pago';
+    b.dataset.pago = p.id;
+    b.setAttribute('aria-pressed', 'false');
+    b.innerHTML = '<span class="nm"></span><span class="note"></span>';
+    b.querySelector('.nm').textContent   = p.name;
+    b.querySelector('.note').textContent = p.note || '';
+    b.addEventListener('click', function () { setPago(p.id); });
+    $('pagos').appendChild(b);
+  });
+
+  function setPago(id) {
+    pago = id;
+    Array.prototype.forEach.call($('pagos').children, function (el) {
+      el.setAttribute('aria-pressed', el.dataset.pago === id ? 'true' : 'false');
+    });
+    render();
+  }
+
+  /* ---------- métodos de entrega -------------------------------------- */
+  M.entrega.forEach(function (e) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'entrega-op';
+    b.dataset.entrega = e.id;
+    b.setAttribute('data-venta', '');
+    b.innerHTML = '<span class="nm"></span><span class="note"></span>';
+    b.querySelector('.nm').textContent   = e.name;
+    b.querySelector('.note').textContent = e.resumen || '';
+    b.addEventListener('click', function () { abrirEntrega(e); });
+    $('entregas').appendChild(b);
+  });
+
+  function abrirEntrega(e) {
+    if (!pago) { M.toast('Primero elegí si abonás en efectivo o por transferencia.'); return; }
+    if (!C.items().length) return;
+
+    entrega = e.id;
+    $('me-k').textContent     = e.name;
+    $('me-t').textContent     = e.titulo;
+    $('me-texto').textContent = e.texto;
+    $('me-total').textContent = e.id === 'delivery'
+      ? 'Pedido: ' + M.money(C.total()) + '  ·  envío aparte'
+      : 'Total: ' + M.money(C.total());
+
+    /* el mapa solo tiene sentido en retiro; el aviso del envío, solo en delivery */
+    var esDelivery = e.id === 'delivery';
+
+    var mapa = $('me-mapa');
+    mapa.hidden = !e.mapa;
+    if (e.mapa) mapa.href = e.mapa;
+
+    $('me-alerta').hidden = !esDelivery;
+    $('me-boton').textContent = esDelivery ? 'Confirmar y Enviar Pedido' : 'Confirmar y enviar';
+
+    $('modal-entrega').hidden = false;
+    requestAnimationFrame(function () { $('modal-entrega').classList.add('on'); });
+  }
+
+  function cerrarEntrega() {
+    $('modal-entrega').classList.remove('on');
+    setTimeout(function () { $('modal-entrega').hidden = true; }, 240);
+  }
+
+  $('modal-entrega').addEventListener('click', function (ev) {
+    if (ev.target === this || ev.target.hasAttribute('data-cerrar')) cerrarEntrega();
+  });
+  document.addEventListener('keydown', function (ev) {
+    if (ev.key === 'Escape' && !$('modal-entrega').hidden) cerrarEntrega();
+  });
+
+  $('me-confirmar').addEventListener('click', function () {
+    if (!TIENDA.ventaActiva()) { M.toast('Ahora mismo no estamos tomando pedidos.'); return; }
+    if (!pago || !entrega || !C.items().length) return;
+
+    var n = C.registrar(pago, entrega);          /* queda anotado para el panel */
+    M.enviarWhatsApp(C.mensaje(pago, $('nota-general').value, entrega));
+    cerrarEntrega();
+    C.clear();
+    M.toast('Pedido #' + n + ' enviado. Te confirmamos por WhatsApp.');
+  });
+
+  /* ---------- una línea del pedido ------------------------------------- */
+  function fila(it, i) {
+    var el = document.createElement('article');
+    el.className = 'linea';
+    el.innerHTML =
+      '<span class="foto"><img alt=""></span>' +
+      '<div class="datos">' +
+        '<div class="titulo"><h3></h3><span class="tam"></span></div>' +
+        '<p class="detalle"></p>' +
+        '<div class="pie">' +
+          '<span class="stepper">' +
+            '<button type="button" class="menos" aria-label="Quitar una">&minus;</button>' +
+            '<span class="qty"></span>' +
+            '<button type="button" class="mas" aria-label="Agregar una">+</button>' +
+          '</span>' +
+          '<button type="button" class="quitar">Quitar</button>' +
+          '<span class="subtotal"></span>' +
+        '</div>' +
+      '</div>';
+
+    el.querySelector('h3').textContent = it.name;
+
+    var tam = el.querySelector('.tam');
+    tam.textContent = it.size === 'doble' ? 'Doble' : 'Simple';
+    tam.classList.toggle('doble', it.size === 'doble');
+
+    /* agregados + nota en una sola línea de texto */
+    var det = el.querySelector('.detalle');
+    var ex  = (it.extras || []).map(function (e) {
+      return e.name + (e.n > 1 ? ' x' + e.n : '');
+    });
+    det.textContent = ex.length ? 'Con ' + ex.join(', ') : 'Sin agregados';
+    if (it.nota) {
+      var n = document.createElement('span');
+      n.className = 'nota';
+      n.textContent = '“' + it.nota + '”';
+      det.appendChild(n);
+    }
+
+    el.querySelector('.qty').textContent      = it.qty;
+    el.querySelector('.subtotal').textContent = M.money(C.lineTotal(it));
+    el.querySelector('.menos').disabled       = it.qty === 1;
+
+    var burger = M.find(it.burger);
+    M.resolveImage(el.querySelector('.foto img'), burger ? burger.img : it.name, it.name);
+
+    el.querySelector('.menos').addEventListener('click', function () { C.setQty(i, it.qty - 1); });
+    el.querySelector('.mas').addEventListener('click',   function () { C.setQty(i, it.qty + 1); });
+    el.querySelector('.quitar').addEventListener('click', function () {
+      C.remove(i);
+      M.toast(it.name + ' salió del pedido.');
+    });
+
+    return el;
+  }
+
+  /* ---------- render ---------------------------------------------------- */
+  function render() {
+    var items = C.items();
+    var n     = C.count();
+    var hay   = items.length > 0;
+
+    $('lineas').innerHTML = '';
+    items.forEach(function (it, i) { $('lineas').appendChild(fila(it, i)); });
+
+    $('vacio').hidden   = hay;
+    $('resumen').hidden = !hay;
+    $('titulo').textContent = hay
+      ? (n === 1 ? '1 hamburguesa' : n + ' hamburguesas')
+      : 'El carrito';
+
+    if (!hay) return;
+
+    $('l-cant').textContent = n === 1 ? '1 hamburguesa' : n + ' hamburguesas';
+    $('v-sub').textContent  = M.money(C.total());
+
+    var elegido = M.pagos.filter(function (p) { return p.id === pago; })[0];
+    $('v-pago').textContent = elegido ? elegido.name : 'A elegir';
+    $('v-total').textContent = M.money(C.total());
+
+    $('aviso').textContent = !pago
+      ? 'Elegí primero cómo abonás, y después si lo retirás o te lo llevamos.'
+      : 'Elegí retiro o delivery: te mostramos los detalles antes de mandar el pedido.';
+  }
+
+  /* ---------- acciones -------------------------------------------------- */
+  $('vaciar').addEventListener('click', function () {
+    if (!C.items().length) return;
+    if (!confirm('¿Vaciar el carrito? Se borra todo el pedido.')) return;
+    C.clear();
+    M.toast('Carrito vacío.');
+  });
+
+  window.addEventListener('carrito:cambio', render);
+  render();
+})();
+</script>
+</body>
+</html>

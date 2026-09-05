@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Encabezado con miel · Churry's</title>
+
+<!--
+================================================================================
+  MIEL DERRITIENDOSE EN EL ENCABEZADO PRINCIPAL · Churry's
+  Solo para la hamburguesa Honey (producto.html?burger=honey)
+================================================================================
+
+  QUE HACE
+  --------
+  Convierte el fondo del encabezado (la barra donde estan el logo, @churrys_ar
+  y el boton "Ver la carta") en una capa de miel real, y desde el borde inferior
+  de esa barra cuelgan los chorreados: crecen, se estiran y cada tanto se
+  desprende una gota que cae sobre el contenido. La barra ES la fuente de la miel.
+
+  El logo, el link de Instagram y el boton siguen arriba de la miel y clickeables:
+  la miel es un SVG con pointer-events:none y z-index por debajo de .nav.
+
+  COMO INTEGRARLO EN producto.html  (2 pegados, no hay HTML que tocar)
+  -------------------------------------------------------------------
+  1) CSS → copiar el bloque marcado "INICIO BLOQUE CSS" ... "FIN BLOQUE CSS"
+           al <head> de producto.html, o guardarlo como assets/honey-header.css
+           y enlazarlo despues de assets/brand.css.
+
+  2) JS  → copiar el bloque marcado "INICIO BLOQUE JS" ... "FIN BLOQUE JS"
+           antes del cierre de body, DESPUES de assets/menu.js.
+           (Tambien sirve como archivo aparte: assets/honey-header.js)
+
+  El script no agrega markup a mano: busca el <header> que ya existe, le inyecta
+  el SVG de la miel y mide la altura de .nav para que la losa de miel coincida
+  exactamente con la barra.
+
+  REGLA DE VISIBILIDAD (ya resuelta en el JS)
+  -------------------------------------------
+  Lee ?burger= de la URL:
+    · burger=honey  -> agrega la clase .honey-on al body y anima la miel.
+    · cualquier otra -> no hace nada, no inyecta nada, cero costo.
+  churrys.html (la home) no se toca: ahi el encabezado queda como esta hoy.
+  Constante editable arriba del script: SOLO_EN = 'honey'.
+
+  AJUSTES RAPIDOS (constantes al principio del script)
+  ----------------------------------------------------
+    VELOCIDAD  0.4 lenta · 1 normal · 2 rapida
+    LARGO      multiplicador del largo de los chorreados (0.6 cortos, 1.6 largos)
+    DENSIDAD   cantidad de chorreados a lo ancho
+
+  DETALLES
+  --------
+  · Con prefers-reduced-motion: reduce la miel queda quieta.
+  · La animacion se pausa sola cuando la pestaña esta en segundo plano.
+  · El SVG se re-arma solo al cambiar el ancho de la ventana (ResizeObserver).
+  · Si el logo rojo sobre miel te queda con poco contraste, cambiá en el CSS
+    body.honey-on .nav .logo { filter: ... } o usá el logo en version crema.
+
+  Este archivo funciona ademas como DEMO: abrilo en el navegador tal cual.
+================================================================================
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Lobster+Two:ital,wght@1,700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- ===== INICIO BLOQUE CSS ===== -->
+<style id="honey-header-css">
+/* la miel reemplaza el fondo crema del encabezado */
+body.honey-on header{
+  background:#8A4404;              /* base calida debajo de la miel */
+  border-bottom:0;
+  overflow:visible;               /* deja que los chorreados salgan de la barra */
+}
+body.honey-on .nav{
+  position:relative;
+  z-index:2;                      /* logo, IG y boton por encima de la miel */
+  padding-top:14px;
+  padding-bottom:14px;
+}
+body.honey-on .nav .logo{
+  filter:drop-shadow(0 2px 5px rgba(74,26,0,.5));
+}
+body.honey-on .nav .ig{
+  color:#5A2400;
+  font-weight:800;
+  text-shadow:0 1px 0 rgba(255,232,170,.55);
+}
+body.honey-on .nav .cta{
+  background:#C20C0B;
+  border-color:#4A0202;
+  box-shadow:3px 3px 0 rgba(74,2,2,.75);
+}
+body.honey-on .nav .cta:hover{background:#D82828}
+
+/* la capa de miel */
+.honey-drip{
+  position:absolute;
+  top:0;left:0;width:100%;
+  z-index:1;
+  display:block;
+  overflow:visible;
+  pointer-events:none;
+}
+</style>
+<!-- ===== FIN BLOQUE CSS ===== -->
+
+<style>
+/* ---- SOLO PARA QUE ESTE ARCHIVO SE VEA COMO DEMO · NO COPIAR ------------
+   Es una copia reducida de assets/brand.css (header, nav, cta, footer).    */
+:root{--rojo:#C20C0B;--rojo-vivo:#D82828;--bordo:#6E0000;--crema:#FAF5F1;--tinta:#2A1210;
+      --display:'Alfa Slab One',Rockwell,Georgia,serif;--sans:'Poppins',system-ui,sans-serif;
+      --pad:clamp(18px,5vw,64px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--crema);color:var(--tinta);font-family:var(--sans);font-weight:500}
+img{display:block;max-width:100%}
+header{background:var(--crema);position:sticky;top:0;z-index:60;border-bottom:3px solid var(--rojo)}
+.nav{max-width:1240px;margin:0 auto;padding:10px var(--pad);display:flex;align-items:center;gap:14px}
+.nav .logo{width:clamp(112px,20vw,164px);height:auto;object-fit:contain}
+.nav .sp{flex:1}
+.nav .ig{font-weight:700;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;
+         text-decoration:none;color:var(--rojo);white-space:nowrap}
+.cta{display:inline-flex;align-items:center;gap:10px;background:var(--rojo-vivo);color:var(--crema);
+     font-family:var(--display);font-size:.85rem;text-decoration:none;padding:9px 15px;
+     border:3px solid var(--bordo);border-radius:4px;box-shadow:3px 3px 0 var(--bordo)}
+.demo-cuerpo{max-width:1100px;margin:0 auto;padding:clamp(24px,5vw,52px) var(--pad)}
+.demo-cuerpo h1{font-family:var(--display);font-weight:400;font-size:clamp(2rem,7vw,3rem);
+                line-height:.96;color:var(--rojo);text-transform:uppercase;margin:0}
+.demo-cuerpo p{font-size:.92rem;line-height:1.7;color:#5B3A36;max-width:52ch}
+.demo-cuerpo code{background:#F0E8E8;padding:2px 6px;border-radius:4px;font-size:.85em}
+</style>
+</head>
+
+<body>
+
+<!-- El encabezado NO cambia: es el mismo markup que ya tiene producto.html -->
+<header>
+  <div class="nav">
+    <a href="churrys.html"><img class="logo" src="logo churrys transparente.png" alt="Churry's"></a>
+    <span class="sp"></span>
+    <a class="ig" href="https://www.instagram.com/churrys_ar/" target="_blank" rel="noopener">@churrys_ar</a>
+    <a class="cta chico" href="churrys.html#carta">Ver la carta</a>
+  </div>
+</header>
+
+<main class="demo-cuerpo">
+  <h1>Honey</h1>
+  <p><strong>Demo.</strong> La miel es el fondo del encabezado y los chorreados caen desde la barra
+  sobre el contenido. En <code>producto.html</code> el script solo se activa cuando la URL trae
+  <code>?burger=honey</code>; con cualquier otra hamburguesa el encabezado queda crema como hoy.</p>
+  <p>Abajo de esto sigue la pagina de producto tal como esta: foto, tamaño simple/doble, toppings,
+  nota y total.</p>
+</main>
+
+<!-- ===== INICIO BLOQUE JS ===== -->
+<script id="honey-header-js">
+(function () {
+  'use strict';
+
+  var SOLO_EN   = 'honey';  /* id de la hamburguesa que lleva miel */
+  var VELOCIDAD = 1;        /* 0.4 lenta · 1 normal · 2 rapida */
+  var LARGO     = 1;        /* largo de los chorreados */
+  var DENSIDAD  = 1;        /* cantidad de chorreados */
+
+  var header = document.querySelector('header');
+  var nav    = header && header.querySelector('.nav');
+  if (!header || !nav) return;
+
+  /* --- solo en la pagina de producto de la Honey -------------------------- */
+  var enProducto = /producto\.html$/i.test(location.pathname);
+  if (enProducto && new URLSearchParams(location.search).get('burger') !== SOLO_EN) return;
+  document.body.classList.add('honey-on');
+
+  var NS = 'http://www.w3.org/2000/svg';
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var svg = document.createElementNS(NS, 'svg');
+  svg.setAttribute('class', 'honey-drip');
+  svg.setAttribute('aria-hidden', 'true');
+  svg.innerHTML = [
+    '<defs>',
+      '<linearGradient id="hnBody" gradientUnits="userSpaceOnUse" x1="0" y1="-10" x2="0" y2="320">',
+        '<stop offset="0" stop-color="#B96C08"/>',
+        '<stop offset="0.08" stop-color="#E09A18"/>',
+        '<stop offset="0.20" stop-color="#F7C445"/>',
+        '<stop offset="0.33" stop-color="#FFD86E"/>',
+        '<stop offset="0.50" stop-color="#F0AC28"/>',
+        '<stop offset="0.72" stop-color="#D88C12"/>',
+        '<stop offset="1" stop-color="#B4670A"/>',
+      '</linearGradient>',
+      '<linearGradient id="hnSheen" gradientUnits="userSpaceOnUse" x1="0" y1="-6" x2="0" y2="300">',
+        '<stop offset="0" stop-color="#FFFFFF" stop-opacity="0.34"/>',
+        '<stop offset="0.22" stop-color="#FFE9B0" stop-opacity="0.10"/>',
+        '<stop offset="0.45" stop-color="#FFFFFF" stop-opacity="0"/>',
+        '<stop offset="0.82" stop-color="#FFD27A" stop-opacity="0.10"/>',
+        '<stop offset="1" stop-color="#FFF0C4" stop-opacity="0.30"/>',
+      '</linearGradient>',
+      '<linearGradient id="hnTop" gradientUnits="userSpaceOnUse" x1="0" y1="-6" x2="0" y2="120">',
+        '<stop offset="0" stop-color="#5A2400" stop-opacity="0.45"/>',
+        '<stop offset="0.30" stop-color="#8A4404" stop-opacity="0.10"/>',
+        '<stop offset="1" stop-color="#8A4404" stop-opacity="0"/>',
+      '</linearGradient>',
+      '<clipPath id="hnClip"><use href="#hnPath"/></clipPath>',
+      /* filtro "goo": funde las gotas con el chorreado como un liquido real */
+      '<filter id="hnGoo" x="-15%" y="-25%" width="130%" height="190%" color-interpolation-filters="sRGB">',
+        '<feGaussianBlur in="SourceGraphic" stdDeviation="8" result="b"/>',
+        '<feColorMatrix in="b" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -10" result="g"/>',
+        '<feComposite in="SourceGraphic" in2="g" operator="atop"/>',
+      '</filter>',
+      '<filter id="hnSoft" x="-60%" y="-60%" width="220%" height="220%">',
+        '<feGaussianBlur stdDeviation="5"/>',
+      '</filter>',
+      '<filter id="hnShadow" x="-20%" y="-20%" width="140%" height="200%">',
+        '<feDropShadow dx="0" dy="13" stdDeviation="15" flood-color="#280A00" flood-opacity="0.55"/>',
+      '</filter>',
+    '</defs>',
+    '<g filter="url(#hnShadow)">',
+      '<g filter="url(#hnGoo)">',
+        '<path id="hnPath" fill="url(#hnBody)"/>',
+        '<g id="hnDrops"></g>',
+      '</g>',
+      '<path id="hnGloss" fill="url(#hnSheen)"/>',
+      '<g clip-path="url(#hnClip)">',
+        '<rect id="hnDark" x="-20" y="-20" width="4000" height="140" fill="url(#hnTop)"/>',
+        '<rect id="hnStreak" x="-20" width="4000" fill="#FFF8E0" opacity="0.5" filter="url(#hnSoft)"/>',
+        '<rect id="hnStreak2" x="-20" width="4000" fill="#FFFFFF" opacity="0.22" filter="url(#hnSoft)"/>',
+      '</g>',
+      '<path id="hnRim" fill="none" stroke="#FFEFC0" stroke-opacity="0.55" stroke-width="1.8"/>',
+      '<g id="hnSpec" filter="url(#hnSoft)"></g>',
+    '</g>'
+  ].join('');
+  header.insertBefore(svg, header.firstChild);
+
+  var path    = svg.querySelector('#hnPath');
+  var gloss   = svg.querySelector('#hnGloss');
+  var rim     = svg.querySelector('#hnRim');
+  var dropsG  = svg.querySelector('#hnDrops');
+  var specG   = svg.querySelector('#hnSpec');
+  var streak  = svg.querySelector('#hnStreak');
+  var streak2 = svg.querySelector('#hnStreak2');
+
+  var W = 0, H = 300, navH = 64, t = 0, drips = [], drops = [], raf = null, last = 0;
+
+  function rnd(a, b) { return a + Math.random() * (b - a); }
+  function f(v) { return v.toFixed(1); }
+
+  /* --- medir la barra: la losa de miel = alto de .nav --------------------- */
+  function measure() {
+    var w = header.clientWidth;
+    if (!w) return;
+    W = w;
+    navH = nav.offsetHeight;
+    H = navH + Math.round(Math.max(150, Math.min(310, w * 0.20)));
+    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+    svg.style.height = H + 'px';
+    build();
+  }
+
+  function build() {
+    if (!W) return;
+    var n = Math.max(3, Math.round((W / 190) * DENSIDAD));
+    var slot = W / n;
+    drips = [];
+    for (var i = 0; i < n; i++) {
+      drips.push({
+        cx:   slot * (i + 0.5) + rnd(-0.16, 0.16) * slot,
+        w:    Math.min(slot * 0.34, rnd(20, 40)),
+        L:    rnd(8, 90) * LARGO,
+        max:  rnd(55, 175) * LARGO,
+        rate: rnd(5, 18)
+      });
+    }
+    specG.innerHTML = '';
+    drips.forEach(function () {
+      var e = document.createElementNS(NS, 'ellipse');
+      e.setAttribute('fill', '#FFF6DA');
+      e.setAttribute('opacity', '0.5');
+      specG.appendChild(e);
+    });
+    drops.forEach(function (o) { if (o.el.parentNode) o.el.parentNode.removeChild(o.el); });
+    drops = [];
+    step(0);
+  }
+
+  /* borde inferior de la barra, con una respiracion muy leve */
+  function baseY(i) { return navH + Math.sin(t * 0.5 + i * 1.7) * 3.5; }
+
+  function spawn(x, y, r) {
+    if (drops.length > 8) return;
+    var el = document.createElementNS(NS, 'ellipse');
+    el.setAttribute('fill', 'url(#hnBody)');
+    dropsG.appendChild(el);
+    drops.push({ x: x, y: y, r: Math.max(8, r), v: 26, el: el });
+  }
+
+  /* --- silueta: losa de la barra + chorreados con cuello fino y punta gorda */
+  function buildPath() {
+    var prevX = 0, prevY = baseY(-1);
+    var p = 'M ' + W + ',-4 L 0,-4 L 0,' + f(prevY);
+
+    drips.forEach(function (d, i) {
+      var b = baseY(i), L = d.L, lx = d.cx - d.w, rx = d.cx + d.w;
+
+      p += ' Q ' + f((prevX + lx) / 2) + ',' + f(Math.max(prevY, b) + 10) + ' ' + f(lx) + ',' + f(b);
+
+      p += ' C ' + f(d.cx - d.w * 0.99) + ',' + f(b + L * 0.14) +
+           ' '  + f(d.cx - d.w * 0.62) + ',' + f(b + L * 0.24) +
+           ' '  + f(d.cx - d.w * 0.56) + ',' + f(b + L * 0.56);
+      p += ' C ' + f(d.cx - d.w * 0.53) + ',' + f(b + L * 0.79) +
+           ' '  + f(d.cx - d.w * 0.82) + ',' + f(b + L * 0.85) +
+           ' '  + f(d.cx - d.w * 0.74) + ',' + f(b + L * 0.95);
+      p += ' C ' + f(d.cx - d.w * 0.50) + ',' + f(b + L * 1.14) +
+           ' '  + f(d.cx + d.w * 0.50) + ',' + f(b + L * 1.14) +
+           ' '  + f(d.cx + d.w * 0.74) + ',' + f(b + L * 0.95);
+      p += ' C ' + f(d.cx + d.w * 0.82) + ',' + f(b + L * 0.85) +
+           ' '  + f(d.cx + d.w * 0.53) + ',' + f(b + L * 0.79) +
+           ' '  + f(d.cx + d.w * 0.56) + ',' + f(b + L * 0.56);
+      p += ' C ' + f(d.cx + d.w * 0.62) + ',' + f(b + L * 0.24) +
+           ' '  + f(d.cx + d.w * 0.99) + ',' + f(b + L * 0.14) +
+           ' '  + f(rx) + ',' + f(b);
+
+      prevX = rx; prevY = b;
+    });
+
+    p += ' Q ' + f((prevX + W) / 2) + ',' + f(prevY + 10) + ' ' + W + ',' + f(prevY) + ' Z';
+    return p;
+  }
+
+  function step(dt) {
+    if (!W) return;
+    t += dt;
+
+    drips.forEach(function (d, i) {
+      d.L += d.rate * VELOCIDAD * dt;
+      if (d.L > d.max) {                        /* se corta y cae una gota */
+        spawn(d.cx, baseY(i) + d.L, d.w * 0.4);
+        d.L = d.max * 0.16 + rnd(0, 14);
+        d.max = rnd(55, 180) * LARGO;
+        d.rate = rnd(5, 18);
+      }
+      var e = specG.children[i];
+      if (e) {
+        var b = baseY(i);
+        e.setAttribute('cx', f(d.cx - d.w * 0.3));
+        e.setAttribute('cy', f(b + d.L * 0.38));
+        e.setAttribute('rx', f(Math.max(2.5, d.w * 0.13)));
+        e.setAttribute('ry', f(Math.max(6, d.L * 0.26)));
+      }
+    });
+
+    for (var k = drops.length - 1; k >= 0; k--) {
+      var o = drops[k];
+      o.v += 1150 * dt;
+      o.y += o.v * dt;
+      var st = Math.min(1.5, o.v / 520);        /* se estira al caer */
+      o.el.setAttribute('cx', f(o.x));
+      o.el.setAttribute('cy', f(o.y));
+      o.el.setAttribute('rx', f(o.r * (1 - Math.min(0.32, o.v / 2400))));
+      o.el.setAttribute('ry', f(o.r * (1 + st)));
+      if (o.y - 60 > H) { dropsG.removeChild(o.el); drops.splice(k, 1); }
+    }
+
+    /* reflejos horizontales dentro de la losa */
+    streak.setAttribute('y', f(navH * 0.30));
+    streak.setAttribute('height', f(Math.max(4, navH * 0.075)));
+    streak2.setAttribute('y', f(navH * 0.58));
+    streak2.setAttribute('height', f(Math.max(2, navH * 0.03)));
+
+    var d = buildPath();
+    path.setAttribute('d', d);
+    gloss.setAttribute('d', d);
+    rim.setAttribute('d', d);
+  }
+
+  function tick(now) {
+    var dt = Math.min(0.05, (now - last) / 1000);
+    last = now;
+    step(reduced ? 0 : dt);
+    raf = requestAnimationFrame(tick);
+  }
+  function play()  { if (!raf) { last = performance.now(); raf = requestAnimationFrame(tick); } }
+  function pause() { if (raf) { cancelAnimationFrame(raf); raf = null; } }
+
+  measure();
+  if (window.ResizeObserver) new ResizeObserver(measure).observe(header);
+  else window.addEventListener('resize', measure);
+
+  document.addEventListener('visibilitychange', function () {
+    document.hidden ? pause() : play();
+  });
+  play();
+})();
+</script>
+<!-- ===== FIN BLOQUE JS ===== -->
+
+</body>
+</html>

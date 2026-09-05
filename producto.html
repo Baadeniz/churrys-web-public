@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Armá tu hamburguesa · Churry's</title>
+<meta name="description" content="Elegí simple o doble, sumá agregados y mandá tu pedido por WhatsApp.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Lobster+Two:ital,wght@1,700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/brand.css">
+</head>
+<body>
+
+<div class="top"><div class="rail"></div></div>
+<p id="aviso-tienda" hidden></p>
+
+<header>
+  <div class="nav">
+    <a href="churrys.html"><img class="logo" src="logo churrys transparente.png" alt="Churry's"></a>
+    <span class="sp"></span>
+    <a class="ig" href="https://www.instagram.com/churrys_ar/" target="_blank" rel="noopener">@churrys_ar</a>
+    <a class="cta chico claro" href="churrys.html#carta">Ver la carta</a>
+    <a class="cta chico" data-cart-link href="carrito.html">Carrito <span class="cart-badge" data-cart-count>0</span></a>
+  </div>
+</header>
+
+<main class="prod">
+  <a class="volver" href="churrys.html#carta">&larr; Volver a la carta</a>
+
+  <div class="prod-grid">
+
+    <div class="visor">
+      <div class="visor-escena">
+        <div class="despiece" id="stage"></div>
+      </div>
+
+      <div class="visor-ctrl">
+        <button type="button" id="btn-armar" aria-pressed="false">Desarmar</button>
+      </div>
+
+      <div class="lectura" id="lectura" role="status" aria-live="polite"></div>
+    </div>
+
+    <div class="prod-info">
+      <p class="k">Armá tu hamburguesa</p>
+      <h1 id="nombre">&nbsp;</h1>
+      <p class="tagline" id="tagline"></p>
+      <p class="desc" id="desc"></p>
+
+      <!-- cuántas -->
+      <section class="bloque">
+        <p class="k">¿Cuántas querés?</p>
+        <div class="topping" style="border-style:solid">
+          <span class="txt">
+            <span class="nm">Unidades</span>
+            <span class="note">Cada una se personaliza por separado, más abajo.</span>
+          </span>
+          <span class="stepper">
+            <button type="button" id="u-menos" aria-label="Una menos">&minus;</button>
+            <span class="qty" id="u-qty">1</span>
+            <button type="button" id="u-mas" aria-label="Una más">+</button>
+          </span>
+        </div>
+      </section>
+
+      <!-- una tarjeta por unidad -->
+      <section class="bloque">
+        <p class="k">Personalizá cada una</p>
+        <div class="unidades" id="unidades"></div>
+      </section>
+
+      <!-- total -->
+      <section class="total">
+        <div id="l-lineas"></div>
+        <div class="fila grande"><span>Subtotal</span><span id="v-total">—</span></div>
+
+        <button class="cta claro" id="agregar" type="button" data-venta>Agregar al carrito</button>
+        <a class="ver-carrito" href="carrito.html">Ver el pedido · <span class="cart-badge" data-cart-count>0</span></a>
+        <p class="aviso">Sumá todas las que quieras y mandalas juntas desde el carrito.</p>
+      </section>
+    </div>
+
+  </div>
+</main>
+
+<div class="rail rojo"></div>
+
+<footer>
+  <img class="logo" src="logo churrys transparente.png" alt="Churry's">
+  <p>Home of the american burgers</p>
+  <p>Merlo, San Luis · <a href="https://www.instagram.com/churrys_ar/" target="_blank" rel="noopener">@churrys_ar</a></p>
+</footer>
+
+<!-- elegir el sabor del dip -->
+<div class="modal" id="modal-dip" role="dialog" aria-modal="true" aria-labelledby="modal-dip-t" hidden>
+  <div class="modal-caja">
+    <button class="modal-cerrar" type="button" data-cerrar aria-label="Cerrar">&times;</button>
+    <p class="k">Dip de salsa</p>
+    <h2 id="modal-dip-t">¿De qué lo querés?</h2>
+    <p>Cada dip suma $500 al pedido. Podés pedir varios y combinarlos.</p>
+    <div class="sabores-grid" id="sabores"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="assets/menu.js"></script>
+<script src="assets/tienda.js"></script>
+<script src="assets/cart.js"></script>
+<script src="assets/despiece.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  var M = window.CHURRYS;
+  var $ = function (id) { return document.getElementById(id); };
+
+  var params = new URLSearchParams(location.search);
+  var burger = M.find(params.get('burger')) || M.burgers[0];
+  var sizeInicial = params.get('size') === 'doble' ? 'doble' : 'simple';
+
+  /* ---------- estado: una entrada por hamburguesa pedida --------------- */
+  function nuevaUnidad(size) {
+    var u = { size: size || 'simple', qty: {}, dips: [], nota: '' };
+    M.toppings.forEach(function (t) { u.qty[t.id] = 0; });
+    return u;
+  }
+
+  var unidades = [nuevaUnidad(sizeInicial)];
+  var abierta  = 0;                 /* índice del acordeón desplegado */
+  var nodos    = [];                /* referencias al DOM de cada unidad */
+
+  /* ---------- cabecera --------------------------------------------------- */
+  document.title = burger.name + ' · Churry’s';
+  $('nombre').textContent  = burger.name;
+  $('tagline').textContent = burger.tag || '';
+  $('desc').textContent    = burger.ing || '';
+
+  /* ---------- despiece ---------------------------------------------------- */
+  var vista = DESPIECE.crear($('stage'), { onCapa: leer });
+
+  function leer(capa) {
+    var n = $('lectura');
+    n.innerHTML = '<span class="n"></span><h3></h3><p></p>';
+    if (capa) {
+      n.querySelector('.n').textContent  = 'Capa ' + capa.n + ' de ' + capa.total;
+      n.querySelector('h3').textContent  = capa.nombre;
+      n.querySelector('p').textContent   = vista.abierto()
+        ? 'Tocá otra capa para verla. Click afuera para soltarla.'
+        : 'Tocá “Desarmar” para separarlas todas.';
+    } else {
+      n.querySelector('.n').textContent  = vista.capas().length + ' capas';
+      n.querySelector('h3').textContent  = burger.name;
+      n.querySelector('p').textContent   = burger.ing || '';
+    }
+  }
+
+  function pintarDespiece() {
+    var u = unidades[abierta] || unidades[0];
+    if (!u) return;
+    vista.set(M.construirStack(burger, u.size, u.qty));
+    if (!$('stage').classList.contains('elegida')) leer(null);
+  }
+
+  $('btn-armar').addEventListener('click', function () {
+    var ab = vista.toggle();
+    this.textContent = ab ? 'Armar de nuevo' : 'Desarmar';
+    this.setAttribute('aria-pressed', ab ? 'true' : 'false');
+  });
+
+  /* ---------- precios ------------------------------------------------------ */
+  function precioUnidad(u) {
+    return M.toppings.reduce(function (acc, t) {
+      return acc + M.precioTopping(t, u.qty[t.id], u.size);
+    }, M.bySize(burger, u.size));
+  }
+
+  function totalGeneral() {
+    return unidades.reduce(function (a, u) { return a + precioUnidad(u); }, 0);
+  }
+
+  /* nombres de los dips elegidos, en texto */
+  function textoDips(u) {
+    return u.dips.map(function (id) {
+      var d = M.dips.filter(function (x) { return x.id === id; })[0];
+      return d ? d.name : id;
+    }).join(', ');
+  }
+
+  /* agregados de una unidad, con el subtotal ya resuelto, para el carrito */
+  function extrasDe(u) {
+    return M.toppings.filter(function (t) { return u.qty[t.id] > 0; })
+      .map(function (t) {
+        return {
+          id: t.id, name: t.name, n: u.qty[t.id],
+          subtotal: M.precioTopping(t, u.qty[t.id], u.size),
+          detalle: t.dips ? textoDips(u) : ''
+        };
+      });
+  }
+
+  /* ---------- construir los acordeones ------------------------------------ */
+  function construir() {
+    var cont = $('unidades');
+    cont.innerHTML = '';
+    nodos = [];
+
+    unidades.forEach(function (u, i) {
+      var card = document.createElement('article');
+      card.className = 'unidad';
+      card.innerHTML =
+        '<button class="unidad-cab" type="button">' +
+          '<span class="idx"></span>' +
+          '<span class="res"><span class="nm"></span><span class="sub"></span></span>' +
+          '<span class="pr"></span><span class="chev" aria-hidden="true"></span>' +
+        '</button>' +
+        '<div class="unidad-cuerpo"><div><div class="unidad-in">' +
+          '<div><p class="k" style="margin-bottom:9px">Tamaño</p><div class="sizes"></div></div>' +
+          '<div><p class="k" style="margin-bottom:9px">Toppings / Agregados</p><p class="incluye-papas">🍟 Incluye guarnición de papas fritas</p><div class="toppings"></div></div>' +
+          '<div><p class="k" style="margin-bottom:9px">Alguna aclaración</p>' +
+            '<textarea class="nota" rows="2" placeholder="Ej: sin cebolla, bien jugosa…"></textarea></div>' +
+          '<button class="unidad-quitar" type="button">Quitar esta hamburguesa</button>' +
+        '</div></div></div>';
+
+      card.querySelector('.idx').textContent = i + 1;
+
+      /* tamaño */
+      var sizes = card.querySelector('.sizes');
+      [['simple', 'Simple'], ['doble', 'Doble']].forEach(function (par) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'size-op';
+        b.dataset.size = par[0];
+        b.innerHTML = '<span class="nm"></span><span class="pr"></span>';
+        b.querySelector('.nm').textContent = par[1];
+        b.querySelector('.pr').textContent = M.money(M.bySize(burger, par[0]));
+        b.addEventListener('click', function () {
+          u.size = par[0];
+          refrescar();
+          pintarDespiece();
+        });
+        sizes.appendChild(b);
+      });
+
+      /* agregados */
+      var tops = card.querySelector('.toppings');
+      M.toppings.forEach(function (t) {
+        var row = document.createElement('div');
+        row.className = 'topping';
+        row.dataset.id = t.id;
+        row.innerHTML =
+          '<span class="txt"><span class="nm"></span><span class="note"></span>' +
+            (t.dips ? '<span class="sabores"></span>' : '') + '</span>' +
+          '<span class="pr"></span>' +
+          '<span class="stepper">' +
+            '<button type="button" class="menos" aria-label="Quitar">&minus;</button>' +
+            '<span class="qty">0</span>' +
+            '<button type="button" class="mas" aria-label="Agregar">+</button>' +
+          '</span>';
+        row.querySelector('.nm').textContent   = t.name;
+        row.querySelector('.note').textContent = t.note || '';
+
+        row.querySelector('.mas').addEventListener('click', function () {
+          if (t.dips) { pedirSabor(u); return; }      /* el dip pregunta el sabor */
+          u.qty[t.id]++;
+          refrescar();
+          pintarDespiece();
+        });
+        row.querySelector('.menos').addEventListener('click', function () {
+          if (u.qty[t.id] <= 0) return;
+          u.qty[t.id]--;
+          if (t.dips) u.dips.pop();
+          refrescar();
+          pintarDespiece();
+        });
+        tops.appendChild(row);
+      });
+
+      /* nota */
+      var nota = card.querySelector('.nota');
+      nota.value = u.nota;
+      nota.addEventListener('input', function () { u.nota = nota.value; });
+
+      /* abrir / cerrar */
+      card.querySelector('.unidad-cab').addEventListener('click', function () {
+        abierta = (abierta === i) ? -1 : i;
+        refrescar();
+        pintarDespiece();
+      });
+
+      /* quitar */
+      var quitar = card.querySelector('.unidad-quitar');
+      quitar.addEventListener('click', function () {
+        if (unidades.length === 1) {
+          M.toast('Tiene que quedar al menos una. Usá “Volver a la carta” si no querés ninguna.');
+          return;
+        }
+        unidades.splice(i, 1);
+        if (abierta >= unidades.length) abierta = unidades.length - 1;
+        construir();
+        pintarDespiece();
+      });
+
+      cont.appendChild(card);
+      nodos.push(card);
+    });
+
+    refrescar();
+  }
+
+  /* ---------- refrescar valores sin rehacer el DOM ------------------------ */
+  function refrescar() {
+    $('u-qty').textContent  = unidades.length;
+    $('u-menos').disabled   = unidades.length <= 1;
+
+    unidades.forEach(function (u, i) {
+      var card = nodos[i];
+      if (!card) return;
+
+      card.classList.toggle('abierta', abierta === i);
+      card.querySelector('.unidad-cab').setAttribute('aria-expanded', abierta === i ? 'true' : 'false');
+
+      var extras = extrasDe(u);
+      card.querySelector('.nm').textContent = burger.name + ' · ' + (u.size === 'doble' ? 'Doble' : 'Simple');
+      card.querySelector('.sub').textContent = extras.length
+        ? extras.map(function (e) { return e.name + (e.n > 1 ? ' x' + e.n : ''); }).join(', ')
+        : 'Como viene';
+      card.querySelector('.unidad-cab .pr').textContent = M.money(precioUnidad(u));
+
+      Array.prototype.forEach.call(card.querySelectorAll('.size-op'), function (b) {
+        b.setAttribute('aria-pressed', b.dataset.size === u.size ? 'true' : 'false');
+      });
+
+      Array.prototype.forEach.call(card.querySelectorAll('.topping'), function (row) {
+        var t = M.toppings.filter(function (x) { return x.id === row.dataset.id; })[0];
+        var n = u.qty[t.id];
+        row.classList.toggle('on', n > 0);
+        row.querySelector('.qty').textContent = n;
+        row.querySelector('.menos').disabled  = n === 0;
+
+        /* La etiqueta muestra lo que cuesta la PRÓXIMA unidad, no el
+           acumulado. En una simple el primer medallón es el diferencial a
+           doble; del segundo en adelante vale el precio pleno.            */
+        row.querySelector('.pr').textContent = '+ ' + M.money(
+          t.escalonado
+            ? ((u.size === 'doble' || n >= 1) ? M.medallon.pleno : M.medallon.diferencial)
+            : t.price);
+
+        var sab = row.querySelector('.sabores');
+        if (sab) {
+          sab.innerHTML = '';
+          u.dips.forEach(function (id) {
+            var d = M.dips.filter(function (x) { return x.id === id; })[0];
+            var s = document.createElement('span');
+            s.className = 'sabor';
+            s.textContent = d ? d.name : id;
+            sab.appendChild(s);
+          });
+        }
+      });
+    });
+
+    /* resumen: la base y cada agregado con su subtotal */
+    var cont = $('l-lineas');
+    cont.innerHTML = '';
+
+    unidades.forEach(function (u, i) {
+      cont.appendChild(filaResumen(
+        '#' + (i + 1) + '  ' + burger.name + ' · ' + (u.size === 'doble' ? 'Doble' : 'Simple'),
+        M.money(M.bySize(burger, u.size)), 'base'));
+
+      extrasDe(u).forEach(function (e) {
+        cont.appendChild(filaResumen(
+          e.name + (e.n > 1 ? ' x' + e.n : '') + (e.detalle ? ' · ' + e.detalle : ''),
+          '+ ' + M.money(e.subtotal), 'extra'));
+      });
+
+      if (unidades.length > 1) {
+        cont.appendChild(filaResumen('Subtotal #' + (i + 1),
+                                     M.money(precioUnidad(u)), 'sub'));
+      }
+    });
+
+    $('v-total').textContent = M.money(totalGeneral());
+  }
+
+  /* una fila del desglose: base, agregado o subtotal de la unidad */
+  function filaResumen(texto, monto, tipo) {
+    var f = document.createElement('div');
+    f.className = 'fila ' + tipo;
+    f.innerHTML = '<span></span><span></span>';
+    f.children[0].textContent = texto;
+    f.children[1].textContent = monto;
+    return f;
+  }
+
+  /* ---------- cantidad de unidades ---------------------------------------- */
+  $('u-mas').addEventListener('click', function () {
+    var ultima = unidades[unidades.length - 1];
+    unidades.push(nuevaUnidad(ultima ? ultima.size : sizeInicial));
+    abierta = unidades.length - 1;
+    construir();
+    pintarDespiece();
+  });
+
+  $('u-menos').addEventListener('click', function () {
+    if (unidades.length <= 1) return;
+    unidades.pop();
+    if (abierta >= unidades.length) abierta = unidades.length - 1;
+    construir();
+    pintarDespiece();
+  });
+
+  /* ---------- modal del dip ------------------------------------------------ */
+  var unidadDip = null;
+
+  function pedirSabor(u) {
+    unidadDip = u;
+    var cont = $('sabores');
+    cont.innerHTML = '';
+    M.dips.forEach(function (d) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'sabor-op';
+      b.textContent = d.name;
+      b.addEventListener('click', function () {
+        unidadDip.dips.push(d.id);
+        unidadDip.qty.dip = unidadDip.dips.length;
+        cerrarModal();
+        refrescar();
+        M.toast('Dip de ' + d.name + ' sumado.');
+      });
+      cont.appendChild(b);
+    });
+    abrirModal();
+  }
+
+  function abrirModal() {
+    var m = $('modal-dip');
+    m.hidden = false;
+    requestAnimationFrame(function () { m.classList.add('on'); });
+  }
+
+  function cerrarModal() {
+    var m = $('modal-dip');
+    m.classList.remove('on');
+    setTimeout(function () { m.hidden = true; }, 240);
+  }
+
+  $('modal-dip').addEventListener('click', function (ev) {
+    if (ev.target === this || ev.target.hasAttribute('data-cerrar')) cerrarModal();
+  });
+  document.addEventListener('keydown', function (ev) {
+    if (ev.key === 'Escape' && !$('modal-dip').hidden) cerrarModal();
+  });
+
+  /* ---------- al carrito ---------------------------------------------------- */
+  $('agregar').addEventListener('click', function () {
+    if (!TIENDA.ventaActiva()) {
+      M.toast('Ahora mismo no estamos tomando pedidos.');
+      return;
+    }
+
+    var sumadas = 0;
+    for (var i = 0; i < unidades.length; i++) {
+      var u = unidades[i];
+      var ok = CARRITO.add({
+        burger: burger.id,
+        name:   burger.name,
+        size:   u.size,
+        base:   M.bySize(burger, u.size),
+        extras: extrasDe(u),
+        nota:   u.nota,
+        qty:    1
+      });
+      if (!ok) break;
+      sumadas++;
+    }
+
+    if (!sumadas) {
+      M.toast('El carrito llegó al máximo de ' + CARRITO.MAX + ' líneas.');
+      return;
+    }
+
+    M.toast(sumadas === 1
+      ? burger.name + ' va al carrito ✓'
+      : sumadas + ' ' + burger.name + ' van al carrito ✓');
+    latir();
+
+    /* se limpia para poder cargar otra tanda sin recargar */
+    unidades = [nuevaUnidad(sizeInicial)];
+    abierta  = 0;
+    construir();
+    pintarDespiece();
+  });
+
+  function latir() {
+    Array.prototype.forEach.call(document.querySelectorAll('.cart-badge'), function (b) {
+      b.classList.add('late');
+      setTimeout(function () { b.classList.remove('late'); }, 220);
+    });
+  }
+
+  /* ---------- arranque ------------------------------------------------------ */
+  construir();
+  pintarDespiece();
+})();
+</script>
+
+</body>
+</html>
