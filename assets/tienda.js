@@ -14,6 +14,7 @@
 
   var K_CONFIG  = 'churrys.tienda.v1';
   var K_PEDIDOS = 'churrys.pedidos.v1';
+  var BACKEND_BASE = global.CHURRYS_BACKEND_URL || 'https://3000-ib2el4cl3uogkz1rtbh0e-c0004752.us1.manus.computer';
 
   var POR_DEFECTO = {
     abierto:       true,   /* recibe pedidos */
@@ -184,6 +185,44 @@
     barra.hidden = !texto;
   }
 
+  function sincronizarRemoto() {
+    return fetch(BACKEND_BASE + '/api/public/catalog')
+      .then(function (response) {
+        if (!response.ok) throw new Error('No se pudo consultar el estado remoto.');
+        return response.json();
+      })
+      .then(function (data) {
+        var activa = !!(data.storeOpen && data.acceptingOrders);
+        var disponibles = {};
+        (data.menuItems || []).forEach(function (item) {
+          disponibles[String(item.name || '').trim().toLowerCase()] = true;
+        });
+
+        document.querySelectorAll('[data-venta]').forEach(function (el) {
+          var card = el.closest('[data-burger-id]');
+          var burgerId = card ? card.getAttribute('data-burger-id') : document.body.getAttribute('data-burger-id');
+          var burger = (global.CHURRYS && global.CHURRYS.burgers || []).filter(function (entry) { return entry.id === burgerId; })[0];
+          var productAvailable = !burger || !!disponibles[String(burger.name || '').trim().toLowerCase()];
+          var enabled = activa && productAvailable;
+          el.classList.toggle('venta-off', !enabled);
+          if ('disabled' in el) el.disabled = !enabled;
+          if (!enabled) el.setAttribute('aria-disabled', 'true');
+          else el.removeAttribute('aria-disabled');
+        });
+
+        var barra = document.getElementById('aviso-tienda');
+        if (barra && (!activa || !(data.menuItems || []).length)) {
+          barra.textContent = data.closedMessage || 'Ahora mismo no estamos tomando pedidos.';
+          barra.hidden = false;
+        }
+        return data;
+      })
+      .catch(function (error) {
+        console.warn('[Churrys] No se pudo sincronizar la disponibilidad remota:', error.message);
+        return null;
+      });
+  }
+
   global.TIENDA = {
     config:      config,
     setConfig:   setConfig,
@@ -193,6 +232,7 @@
     borrarPedidos: borrarPedidos,
     metricas:    metricas,
     aplicarEstado: aplicarEstado,
+    sincronizarRemoto: sincronizarRemoto,
     POR_DEFECTO: POR_DEFECTO
   };
 

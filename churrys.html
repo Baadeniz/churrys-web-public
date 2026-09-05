@@ -332,6 +332,7 @@ const grid = document.getElementById('grid');
 CHURRYS.burgers.forEach(function(b){
   const card = document.createElement('article');
   card.className = 'card';
+  card.dataset.burgerId = b.id;
   card.innerHTML =
     '<a class="shot"><img decoding="async"></a>' +
     '<div class="body">' +
@@ -368,6 +369,9 @@ CHURRYS.burgers.forEach(function(b){
   CHURRYS.resolveImage(card.querySelector('.shot img'), b.img, b.name);
   grid.appendChild(card);
 });
+
+/* La disponibilidad remota se suma al estado local sin tocar el diseño. */
+if (window.TIENDA && window.TIENDA.sincronizarRemoto) window.TIENDA.sincronizarRemoto();
 
 /* ============ marquesina ============ */
 document.getElementById('mq').innerHTML =

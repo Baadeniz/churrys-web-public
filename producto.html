@@ -119,6 +119,7 @@
   var params = new URLSearchParams(location.search);
   var burger = M.find(params.get('burger')) || M.burgers[0];
   var sizeInicial = params.get('size') === 'doble' ? 'doble' : 'simple';
+  document.body.setAttribute('data-burger-id', burger.id);
 
   /* ---------- estado: una entrada por hamburguesa pedida --------------- */
   function nuevaUnidad(size) {
@@ -505,6 +506,7 @@
   /* ---------- arranque ------------------------------------------------------ */
   construir();
   pintarDespiece();
+  if (window.TIENDA && window.TIENDA.sincronizarRemoto) window.TIENDA.sincronizarRemoto();
 })();
 </script>
 

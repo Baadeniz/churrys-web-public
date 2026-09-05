@@ -118,6 +118,40 @@
 
   var pago    = null;   /* id de la forma de pago elegida */
   var entrega = null;   /* id del metodo de entrega elegido */
+  /* Se puede reemplazar desde la configuración del sitio cuando Burger Ops tenga dominio publicado. */
+  var BACKEND_BASE = window.CHURRYS_BACKEND_URL || 'https://3000-ib2el4cl3uogkz1rtbh0e-c0004752.us1.manus.computer';
+
+  function registrarEnBackend() {
+    var nota = ($('nota-general').value || '').trim();
+    var pedido = {
+      notes: [
+        entrega ? 'Entrega: ' + entrega : '',
+        pago ? 'Pago: ' + pago : '',
+        nota ? 'Nota: ' + nota : ''
+      ].filter(Boolean).join(' · '),
+      items: C.items().map(function (it) {
+        return {
+          name: it.name,
+          quantity: it.qty,
+          size: it.size,
+          extras: (it.extras || []).map(function (extra) {
+            return extra.name + (extra.n > 1 ? ' x' + extra.n : '') + (extra.detalle ? ' (' + extra.detalle + ')' : '');
+          }),
+          note: it.nota || undefined
+        };
+      })
+    };
+
+    return fetch(BACKEND_BASE + '/api/public/orders', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(pedido),
+      keepalive: true
+    }).then(function (response) {
+      if (!response.ok) return response.json().catch(function () { return {}; }).then(function (body) { throw new Error(body.message || 'No se pudo registrar en Burger Ops.'); });
+      return response.json();
+    });
+  }
 
   /* ---------- formas de pago ------------------------------------------ */
   M.pagos.forEach(function (p) {
@@ -197,7 +231,11 @@
     if (!TIENDA.ventaActiva()) { M.toast('Ahora mismo no estamos tomando pedidos.'); return; }
     if (!pago || !entrega || !C.items().length) return;
 
-    var n = C.registrar(pago, entrega);          /* queda anotado para el panel */
+    var n = C.registrar(pago, entrega);          /* conserva el libro local existente */
+    registrarEnBackend().catch(function (error) {
+      /* El fallo del panel no bloquea el pedido de WhatsApp. */
+      console.warn('[Churrys] Pedido no registrado en Burger Ops:', error.message);
+    });
     M.enviarWhatsApp(C.mensaje(pago, $('nota-general').value, entrega));
     cerrarEntrega();
     C.clear();
